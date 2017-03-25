@@ -1,4 +1,4 @@
-#wraper *, 
+#wraper *:not(.article_stripe), 
 .inno_toolbar_button_menu, 
 .inno_toolbar_button_menu *, 
 .inno_dialog * 
