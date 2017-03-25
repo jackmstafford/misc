@@ -1,3 +1,3 @@
-#wrapper * {
-    background-color: red !important;
+#wraper *, .inno_toolbar_button_menu, .inno_toolbar_button_menu *, .inno_dialog * {
+    background-color: black !important;
 }
