@@ -1,4 +1,4 @@
-console.log('ino.js');
+console.log('ino.js running');
 
 var con;
 var rIframe;
