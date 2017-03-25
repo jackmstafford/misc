@@ -1,28 +1,86 @@
-#wraper *, .inno_toolbar_button_menu, .inno_toolbar_button_menu *, .inno_dialog * {
+#wraper *, 
+.inno_toolbar_button_menu, 
+.inno_toolbar_button_menu *, 
+.inno_dialog * 
+{
     background-color: black !important;
 }
 
-.inno_dialog'], ['border: thin solid #444444']);
-#loader_div'], ['color: #e0e0e0', 'border: thin #2d2d2d solid', 'background-color: ' + col]);
+.inno_dialog 
+{
+    border: thin solid #444444 !important;
+}
+#loader_div 
+{
+    color: #e0e0e0 !important; 
+    border: thin #2d2d2d solid !important; 
+    background-color: #131313 !important;
+}
 
-::-webkit-scrollbar'], ['width: .35em']);
-::-webkit-scrollbar-thumb'], ['background-color: #2d2d2d']);
-::-webkit-scrollbar-track-piece'], ['background-color: #191919']);
+::-webkit-scrollbar 
+{
+    width: .35em !important;
+}
+::-webkit-scrollbar-thumb 
+{
+    background-color: #2d2d2d !important;
+}
+::-webkit-scrollbar-track-piece 
+{
+    background-color: #191919 !important;
+}
 
-A.bluelink:link'], ['color: #be26d8']);
-.article_stripe'], ['background-color: rgb(0, 150, 136)']);
+A.bluelink:link 
+{
+    color: #be26d8 !important;
+}
+.article_stripe 
+{
+    background-color: rgb(0, 150, 136) !important;
+}
 
-var sty = col + ' thick solid';
-.reader_pane_sinner'], ['padding-right: 0px']);
-.ar'], ['max-width: 60em', 'border-left: none']);
-.ar'], ['border-right: ' + sty]);
-.article_expanded'], ['border-top: ' + sty, 'border-bottom: ' + sty]);
-.articles_feed_group_heading'], ['max-width: 53.5em', 'border: none']);
-.articles_feed_group_heading_title'], ['top: 0']);
+// border sty:
+// #131313 thick solid
+.reader_pane_sinner 
+{
+    padding-right: 0px !important;
+}
+.ar 
+{
+    max-width: 60em !important; 
+    border-left: none !important;
+    border-right: #131313 thick solid !important;
+}
+.article_expanded 
+{
+    border-top: #131313 thick solid !important; 
+    border-bottom: #131313 thick solid !important;
+}
+.articles_feed_group_heading 
+{
+    max-width: 53.5em !important; 
+    border: none !important;
+}
+.articles_feed_group_heading_title 
+{
+    top: 0 !important;
+}
 
-.parent_div_inner_selected'], ['border: #404040 thin solid']);
-var bor = '#606060 thin dotted';
-.parent_div_inner_focused', '.article_current_collapsed'], ['border-top: ' + bor, 'border-bottom: ' + bor]);
+.parent_div_inner_selected 
+{
+    border: #404040 thin solid !important;
+}
+.parent_div_inner_focused, .article_current_collapsed 
+{
+    border-top: #606060 thin dotted !important;
+    border-bottom: #606060 thin dotted !important;
+}
 
-#tree_pane'], ['border-right: ' + sty]);
-#subscriptions_buttons'], ['border-bottom: ' + sty]);
+#tree_pane 
+{
+    border-right: #131313 thick solid !important;
+}
+#subscriptions_buttons 
+{
+    border-bottom: #131313 thick solid !important;
+}
