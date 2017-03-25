@@ -1,3 +1,28 @@
 #wraper *, .inno_toolbar_button_menu, .inno_toolbar_button_menu *, .inno_dialog * {
     background-color: black !important;
 }
+
+.inno_dialog'], ['border: thin solid #444444']);
+#loader_div'], ['color: #e0e0e0', 'border: thin #2d2d2d solid', 'background-color: ' + col]);
+
+::-webkit-scrollbar'], ['width: .35em']);
+::-webkit-scrollbar-thumb'], ['background-color: #2d2d2d']);
+::-webkit-scrollbar-track-piece'], ['background-color: #191919']);
+
+A.bluelink:link'], ['color: #be26d8']);
+.article_stripe'], ['background-color: rgb(0, 150, 136)']);
+
+var sty = col + ' thick solid';
+.reader_pane_sinner'], ['padding-right: 0px']);
+.ar'], ['max-width: 60em', 'border-left: none']);
+.ar'], ['border-right: ' + sty]);
+.article_expanded'], ['border-top: ' + sty, 'border-bottom: ' + sty]);
+.articles_feed_group_heading'], ['max-width: 53.5em', 'border: none']);
+.articles_feed_group_heading_title'], ['top: 0']);
+
+.parent_div_inner_selected'], ['border: #404040 thin solid']);
+var bor = '#606060 thin dotted';
+.parent_div_inner_focused', '.article_current_collapsed'], ['border-top: ' + bor, 'border-bottom: ' + bor]);
+
+#tree_pane'], ['border-right: ' + sty]);
+#subscriptions_buttons'], ['border-bottom: ' + sty]);
