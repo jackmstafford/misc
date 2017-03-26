@@ -1,7 +1,10 @@
+'use strict';
+
 console.log('ino.js running');
 
 var con;
 var rIframe;
+var greeny = '#009688';
 
 function articleKeypress(e) {
 	if(!(e.altKey || e.ctrlKey || e.metaKey)) {
@@ -52,16 +55,21 @@ function escapeHtml(text) {
     '"': '&quot;',
     "'": '&#039;'
   };
-
   return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
+function makeLinkElement(src, text) {
+	var linkStyle = " style='color: green; font-size: 1.3em;' ";
+    return $('<a ' + linkStyle + 'target="_blank" href="' + src + '">' + text + '</a>')[0];
+}
+
+function makeImageElement(src) {
+    return $('<img style="max-width: 320px; max-height: 400px; border: 2px dashed ' + greeny + '" src="' + src + '">')[0];
 }
 
 //var doStuff = function() {
 function doStuff(){
-    'use strict';
 	con = $('.article_content');
-	var linkStyle = " style='color: green; font-size: 1.3em;' ";
-	var colo = '#009688';
 	
 	// show article posted date
 	var hds = $('.header_date');
@@ -80,25 +88,21 @@ function doStuff(){
 	
 	// handle iframe stuff
 	var iffy = con.find('iframe');
+    var ass = 'jackson_handled';
 	for(var i = 0; i < iffy.length; i++) {
 		var frame = iffy[i];
 		
 		// avoid handling iframes infinitely
-		var ass = 'jackson_handled';
-		if($(frame).hasClass(ass))
-			continue;
+		if($(frame).hasClass(ass)) continue;
 		$(frame).addClass(ass);
 		
 		// handle audio 
-		if(frame.src.includes('audio') || frame.src.includes('soundcloud')) {
-			var ele = $('<a ' + linkStyle + 'target="_blank" href="' + frame.src + '">AUDIO LINK</a>')[0];
-			frame.parentElement.replaceChild(ele, frame);
-		}
+		if(frame.src.includes('audio') || frame.src.includes('soundcloud')) 
+			frame.parentElement.replaceChild(makeLinkElement(frame.src, 'AUDIO LINK'), frame);
 		
 		// handle vine stuff
 		if(frame.src.includes("vine.co/v")){
-			var el = $('<div><a ' + linkStyle + 'target="_blank" href="' + frame.src + '">VINE</a></div>')[0];
-			frame.parentElement.replaceChild(el, frame);
+			frame.parentElement.replaceChild(makeLinkElement(frame.src, 'VINE'), frame);
 			//var thumbRequestUrl = 'https://vine.co/oembed.json?url=' + frame.src;
 			/*
 			$(frame).ajax({
@@ -108,7 +112,7 @@ function doStuff(){
 			.done(function(json) {
 				var turl = json.thumbnail_url;
 				console.log(json);
-				var img = $('<img style="border: 2px dashed ' + colo + '" width="320" src="' + turl + '">')[0];
+				var img = $('<img style="border: 2px dashed ' + greeny + '" width="320" src="' + turl + '">')[0];
 				el.appent(img);
 				frame.parentElement.replaceChild(el, frame);
 			});
@@ -130,32 +134,27 @@ function doStuff(){
 	var ins = $("blockquote>div>p>a");
 	if(ins.length > 0 && ins[0].href.includes("instagram.com/p")) {
 		var p = ins[0];
-		var bq = p.parentElement.parentElement.parentElement;
-		var ur = "https://api.instagram.com/oembed/?url=" + p.href;
 		$.ajax({
 			dataType: "jsonp",
-			url: ur,
+			url: "https://api.instagram.com/oembed/?url=" + p.href,
 		})
 		.done(function(json) {
-			var turl = json.thumbnail_url;
-			var img = $('<img width="320" style="border: 2px dashed ' + colo + '" src="' + turl + '">')[0];
 			$(p).empty();
-			p.append(img);
+			p.append(makeImageElement(json.thumbnail_url));
 		});
+		var bq = p.parentElement.parentElement.parentElement;
 		$(bq).empty();
 		bq.append(p);
 	}
 	
-	// replace tumblr video display
+	// replace tumblr video display (only does one)
 	var vid = $(con).find('video');
 	if(vid.length > 0 && $(vid[0]).find('source').length > 0) {
 		var sour = $(vid[0]).find('source')[0].src;
 		if(sour.substring(sour.length - 4) != ".mp4")
 			sour += ".mp4";
-		var thumb = vid[0].poster;
 		var aa = $('<a target="_blank" href="' + sour + '"></a>')[0];
-		var img = $('<img width="320" style="border: 2px dashed ' + colo + '" src="' + thumb + '">')[0];
-		aa.append(img);
+		aa.append(makeImageElement(vid[0].poster));
 		vid[0].parentElement.replaceChild(aa, vid[0]);
 	}
 	
@@ -165,21 +164,19 @@ function doStuff(){
 	if(pp.length > 0 && !$(con).hasClass(assc)) {
 		$(con).addClass(assc);
 		pp = pp[0];
-		var hre = $(pp).find('[id^="article_feed_info_link_"]')[0].href;
+		var hre = $(pp).find('[id^="article_feed_info_link_"]')[0].href; // rss feed 
 		if(hre.includes("tumblr")) {
 			var postUrl = $(pp).find('.article_title_link')[0].href;
 			var postId = postUrl.match('post/(\\d+)')[1];
 			var tumb_url = hre.match('%2F%2F(.*)\.tumblr')[1];
 			var blog_identifier = tumb_url + '.tumblr.com';
 			var tur = "https://api.tumblr.com/v2/blog/" + blog_identifier + "/posts/?reblog_info=true&api_key=" + tumb_api_key + "&id=" + postId;
-			var greeny = colo;
 			var tags = "<div style='color: #be26d8; border-top: " + greeny + " dotted .2em'>";
 			var aj = $.ajax({
 				dataType: "jsonp",
 				url: tur,
 			})
 			.success(function(json) {
-				//console.log(json);
 				var po = json.response.posts[0];
 				
 				// tags
