@@ -205,7 +205,7 @@ function doStuff(){
 				var rbName = json.response.blog.name;
 				if(rbId !== undefined && rbName !== undefined) {
 					var ifSrc = 'https://www.tumblr.com/dashboard/iframe?tumblelogName=' + rbName + '&pid=' + rbId;
-					rIframe = $('<div><iframe style="width: 260px; height: 55px" src="' + ifSrc + '"></iframe></div>')[0];
+					rIframe = $('<div><iframe style="width: 540px; height: 55px" src="' + ifSrc + '"></iframe></div>')[0];
 				}
 			})
 			.fail(function() {
