@@ -219,17 +219,26 @@ function doStuff(){
                                 && !ovp[ovpi].startsWith('http')
                                 && ovp[ovpi].length > body.length)
                                 body = ovp[ovpi];
-                        //if(po.body.split('\n').join('') != rebl.tree_html + rebl.comment) {
                         if(body.length == 0 || body.split('\n').join('') != rebl.tree_html + rebl.comment) {
-                            //if(po.body != rebl.tree_html) {
-                            if(body != rebl.tree_html) {
-                            //if(rebl.tree_html.length > 0) {
-                                con.append(makeCommentElement(tree_id, escapeHtml(rebl.tree_html), '[tree]'));
-                                $('#' + tree_id).click(function() { this.innerHTML += this.title; });
+                            if(rebl.tree_html.length > 0 && body != rebl.tree_html) {
+                                var tree_ = '[tree]';
+                                con.append(makeCommentElement(tree_id, escapeHtml(rebl.tree_html), tree_));
+                                $('#' + tree_id).click(function() { 
+                                    if(this.innerHTML == tree_)
+                                        this.innerHTML += this.title; 
+                                    else
+                                        this.innerHTML = tree_;
+                                });
                             }
                             if(rebl.comment.length > 0) {
-                                con.append(makeCommentElement(comm_id, escapeHtml(rebl.comment), '[comment added]'));
-                                $('#' + comm_id).click(function() { this.innerHTML += this.title; });
+                                var comm_ = '[comment added]';
+                                con.append(makeCommentElement(comm_id, escapeHtml(rebl.comment), comm_));
+                                $('#' + comm_id).click(function() { 
+                                    if(this.innerHTML == comm_)
+                                        this.innerHTML += this.title; 
+                                    else
+                                        this.innerHTML = comm_;
+                                });
                             }
                         }
 					}
