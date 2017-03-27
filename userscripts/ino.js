@@ -219,7 +219,7 @@ function doStuff(){
                                 && !ovp[ovpi].startsWith('http')
                                 && ovp[ovpi].length > body.length)
                                 body = ovp[ovpi];
-                        if(body.length == 0 || body.split('\n').join('') != rebl.tree_html + rebl.comment) {
+                        if(body.length == 0 || body.split('\n').join('') != (rebl.tree_html + rebl.comment).split('\n').join('')) {
                             if(rebl.tree_html.length > 0 && body != rebl.tree_html) {
                                 var tree_ = '[tree]';
                                 con.append(makeCommentElement(tree_id, escapeHtml(rebl.tree_html), tree_));
