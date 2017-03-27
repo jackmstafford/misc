@@ -200,7 +200,7 @@ function doStuff(){
 					// added words
 					if(po.reblog !== undefined && po.reblog.comment.length > 0) {
 						con.append($('<p style="color: #049cdb" id="' + comm_id + '" title="' + escapeHtml(po.reblog.comment) + '">[comment added]</p>')[0]);
-						$('#' + idd).click(function() { this.innerHTML += this.title; });
+						$('#' + comm_id).click(function() { this.innerHTML += this.title; });
 					}
 					
 					var rb = '<p><a target="_blank" style="font-size: .9em; color: ' + greeny + ';" href="' + rbUrl + '">' + po.reblogged_from_title + ': ' + po.reblogged_from_name + '</a></p>';
