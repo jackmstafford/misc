@@ -218,7 +218,7 @@ function doStuff(){
                                 && typeof(ovp[ovpi]) == 'string'
                                 && !ovp[ovpi].startsWith('http')
                                 && ovp[ovpi].length > body.length)
-                                body = ovp[ovpi];
+                                body = ovp[ovpi].replace('<br/>', '<br>');
                         if(body.length == 0 || body.split('\n').join('') != (rebl.tree_html + rebl.comment).split('\n').join('')) {
                             if(rebl.tree_html.length > 0 && body != rebl.tree_html) {
                                 var tree_ = '[tree]';
