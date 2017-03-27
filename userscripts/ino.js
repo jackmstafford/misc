@@ -10,9 +10,10 @@ var greeny = '#009688';
 
 function articleKeypress(e) {
 	if(!(e.altKey || e.ctrlKey || e.metaKey)) {
+        var art_ex = $('.article_expanded')[0];
 		if (rIframe !== null && e.which == 66 && e.shiftKey) { // uppercase b
 			con.prepend(rIframe); // add iframe to reblog
-            scrollToTop(con[0].parentElement);
+            scrollToTop(art_ex);
         }
 
         else if (e.which == 67 && e.shiftKey) { // C
@@ -29,10 +30,10 @@ function articleKeypress(e) {
         }
 		
 		else if (e.which == 76 && !e.shiftKey)  // l
-			scrollToBottom(con[0].parentElement); // scroll to bottom of current article
+			scrollToBottom(art_ex); // scroll to bottom of current article
 		
 		else if (e.which == 186 && !e.shiftKey) // ;
-			scrollToTop(con[0].parentElement); // scroll to top of current article
+			scrollToTop(art_ex); // scroll to top of current article
 	}
 }
 
@@ -236,7 +237,7 @@ function doStuff(){
                                 $('#' + tree_id).click(function() { 
                                     if(this.innerHTML == tree_) {
                                         this.innerHTML += this.title; 
-                                        scrollToBottom(this);
+                                        scrollToBottom($('.article_expanded')[0]);
                                     }
                                     else
                                         this.innerHTML = tree_;
@@ -248,7 +249,7 @@ function doStuff(){
                                 $('#' + comm_id).click(function() { 
                                     if(this.innerHTML == comm_) {
                                         this.innerHTML += this.title; 
-                                        scrollToBottom(this);
+                                        scrollToBottom($('.article_expanded')[0]);
                                     }
                                     else
                                         this.innerHTML = comm_;
