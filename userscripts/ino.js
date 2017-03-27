@@ -79,7 +79,7 @@ function makeLinkElement(src, text) {
 }
 
 function makeCommentElement(id, info, text) {
-    return $('<p style="color: #049cdb" id="' + id + '" title="' + info + '">' + text + '</p>')[0]);
+    return $('<p style="color: #049cdb" id="' + id + '" title="' + info + '">' + text + '</p>')[0];
 }
 
 function makeImageElement(src) {
