@@ -6,6 +6,7 @@ var con;
 var rIframe;
 var comm_id = 'jack_comm';
 var tree_id = 'jack_tree';
+var notes_id = 'jack_notes';
 var greeny = '#009688';
 
 function articleKeypress(e) {
@@ -27,6 +28,12 @@ function articleKeypress(e) {
             var tree = $('#' + tree_id);
             if(tree.length == 1)
                 $(tree[0]).click();
+        }
+        else if (e.which == 82 && e.shiftKey) { // R
+            // open notes
+            var notee = $('#' + notes_id);
+            if(notee.length == 1)
+                $(notee[0]).click();
         }
 		
 		else if (e.which == 76 && !e.shiftKey)  // l
@@ -200,7 +207,10 @@ function doStuff(){
 			var postId = postUrl.match('post/(\\d+)')[1];
 			var tumb_url = hre.match('%2F%2F(.*)\.tumblr')[1];
 			var blog_identifier = tumb_url + '.tumblr.com';
-			var tur = "https://api.tumblr.com/v2/blog/" + blog_identifier + "/posts/?reblog_info=true&api_key=" + tumb_api_key + "&id=" + postId;
+            var notes = '';
+            if(tumb_url.includes('sbroxman'))
+                notes = '&notes_info=true';
+			var tur = "https://api.tumblr.com/v2/blog/" + blog_identifier + "/posts/?reblog_info=true&api_key=" + tumb_api_key + "&id=" + postId + notes;
 			var tags = "<div style='color: #be26d8; border-top: " + greeny + " dotted .2em'>";
 			var aj = $.ajax({
 				dataType: "jsonp",
@@ -261,6 +271,28 @@ function doStuff(){
 					var rb = '<p><a target="_blank" style="font-size: .9em; color: ' + greeny + ';" href="' + rbUrl + '">' + po.reblogged_from_title + ': ' + po.reblogged_from_name + '</a></p>';
 					con.append($(rb)[0]);
 				}
+
+                // notes info
+                if(po.notes !== undefined) {
+                    var nots = '';
+                    var pon = Object.values(po.notes);
+                    for(var noti = 0; noti < pon.length; noti++) {
+                        if(pon[noti].added_text !== undefined)
+                            nots += pon[noti].added_text + '<br>';
+                        else if(pon[noti].reply_text !== undefined)
+                            nots += pon[noti].reply_text + '<br>';
+                    }
+                    var notes_ = '[notes]';
+                    con.append($('<div id="' + notes_id + '" title="' + nots + '">' + notes_ + '</div>')[0]);
+                    $('#' + notes_id).click(function(){
+                        if(this.innerHTML == notes_) {
+                            this.innerHTML += this.title; 
+                            scrollToBottom($('.article_expanded')[0]);
+                        }
+                        else
+                            this.innerHTML = notes_;
+                    });
+                }
 				
 				// reblog button
 				var rbId = po.id;
