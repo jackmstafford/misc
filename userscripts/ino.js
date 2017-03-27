@@ -273,7 +273,7 @@ function doStuff(){
 				}
 
                 // notes info
-                if(po.notes !== undefined) {
+                if(rbUrl === undefined && po.notes !== undefined) {
                     var nots = '';
                     var pon = Object.values(po.notes);
                     var counter = 0;
