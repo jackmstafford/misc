@@ -211,8 +211,18 @@ function doStuff(){
 					// added words
 					if(po.reblog !== undefined) { 
                         var rebl = po.reblog;
-                        if(po.body.split('\n').join('') != rebl.tree_html + rebl.comment) {
-                            if(po.body != rebl.tree_html) {
+                        var body = '';
+                        var ovp = Object.values(po);
+                        for(var ovpi = 0; ovpi < ovp.length; ovpi++)
+                            if(ovp[ovpi] != null 
+                                && !ovp[ovpi].startsWith('http')
+                                && ovp[ovpi].length > body.length)
+                                body = ovp[ovpi];
+                        //if(po.body.split('\n').join('') != rebl.tree_html + rebl.comment) {
+                        if(body.length == 0 || body.split('\n').join('') != rebl.tree_html + rebl.comment) {
+                            //if(po.body != rebl.tree_html) {
+                            if(body != rebl.tree_html) {
+                            //if(rebl.tree_html.length > 0) {
                                 con.append(makeCommentElement(tree_id, escapeHtml(rebl.tree_html), '[tree]'));
                                 $('#' + tree_id).click(function() { this.innerHTML += this.title; });
                             }
