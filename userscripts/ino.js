@@ -215,6 +215,7 @@ function doStuff(){
                         var ovp = Object.values(po);
                         for(var ovpi = 0; ovpi < ovp.length; ovpi++)
                             if(ovp[ovpi] != null 
+                                && typeof(ovp[ovpi]) == 'string'
                                 && !ovp[ovpi].startsWith('http')
                                 && ovp[ovpi].length > body.length)
                                 body = ovp[ovpi];
