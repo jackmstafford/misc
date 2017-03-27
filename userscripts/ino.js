@@ -4,12 +4,20 @@ console.log('ino.js running');
 
 var con;
 var rIframe;
+var comm_id = 'jack_comm';
 var greeny = '#009688';
 
 function articleKeypress(e) {
 	if(!(e.altKey || e.ctrlKey || e.metaKey)) {
 		if (rIframe !== null && e.which == 66 && e.shiftKey) // uppercase b
 			con.prepend(rIframe); // add iframe to reblog
+
+        else if (e.which == 67 && e.shiftKey) { // C
+            // open comment
+            var comm = $('#' + comm_id);
+            if(comm.length == 1)
+                $(comm[0]).click();
+        }
 		
 		else if (e.which == 76 && !e.shiftKey)  // l
 			con[0].parentElement.scrollIntoView(false); // scroll to bottom of current article
@@ -191,8 +199,7 @@ function doStuff(){
 				if(rbUrl !== undefined){
 					// added words
 					if(po.reblog !== undefined && po.reblog.comment.length > 0) {
-						var idd = 'jack_comm';
-						con.append($('<p style="color: #049cdb" id="' + idd + '" title="' + escapeHtml(po.reblog.comment) + '">[comment added]</p>')[0]);
+						con.append($('<p style="color: #049cdb" id="' + comm_id + '" title="' + escapeHtml(po.reblog.comment) + '">[comment added]</p>')[0]);
 						$('#' + idd).click(function() { this.innerHTML += this.title; });
 					}
 					
