@@ -29,7 +29,7 @@ function articleKeypress(e) {
             if(tree.length == 1)
                 $(tree[0]).click();
         }
-        else if (e.which == 82 && e.shiftKey) { // R
+        else if (e.which == 221 && e.shiftKey) { // {
             // open notes
             var notee = $('#' + notes_id);
             if(notee.length == 1)
@@ -276,11 +276,12 @@ function doStuff(){
                 if(po.notes !== undefined) {
                     var nots = '';
                     var pon = Object.values(po.notes);
+                    var counter = 0;
                     for(var noti = 0; noti < pon.length; noti++) {
                         if(pon[noti].added_text !== undefined)
-                            nots += pon[noti].added_text + '<br>';
+                            nots += '<br>' + (counter++) + '. ' + pon[noti].added_text;
                         else if(pon[noti].reply_text !== undefined)
-                            nots += pon[noti].reply_text + '<br>';
+                            nots += '<br>' + (counter++) + '. ' + pon[noti].reply_text;
                     }
                     var notes_ = '[notes]';
                     con.append($('<div id="' + notes_id + '" title="' + nots + '">' + notes_ + '</div>')[0]);
