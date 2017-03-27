@@ -10,8 +10,10 @@ var greeny = '#009688';
 
 function articleKeypress(e) {
 	if(!(e.altKey || e.ctrlKey || e.metaKey)) {
-		if (rIframe !== null && e.which == 66 && e.shiftKey) // uppercase b
+		if (rIframe !== null && e.which == 66 && e.shiftKey) { // uppercase b
 			con.prepend(rIframe); // add iframe to reblog
+            scrollToTop(con[0].parentElement);
+        }
 
         else if (e.which == 67 && e.shiftKey) { // C
             // open comment
@@ -27,11 +29,19 @@ function articleKeypress(e) {
         }
 		
 		else if (e.which == 76 && !e.shiftKey)  // l
-			con[0].parentElement.scrollIntoView(false); // scroll to bottom of current article
+			scrollToBottom(con[0].parentElement); // scroll to bottom of current article
 		
 		else if (e.which == 186 && !e.shiftKey) // ;
-			con[0].parentElement.scrollIntoView(true); // scroll to top of current article
+			scrollToTop(con[0].parentElement); // scroll to top of current article
 	}
+}
+
+function scrollToTop(element) {
+    element.scrollIntoView(true);
+}
+
+function scrollToBottom(element) {
+    element.scrollIntoView(false);
 }
 
 // return a string diff of the dates
@@ -224,8 +234,10 @@ function doStuff(){
                                 var tree_ = '[tree]';
                                 con.append(makeCommentElement(tree_id, escapeHtml(rebl.tree_html), tree_));
                                 $('#' + tree_id).click(function() { 
-                                    if(this.innerHTML == tree_)
+                                    if(this.innerHTML == tree_) {
                                         this.innerHTML += this.title; 
+                                        scrollToBottom(this);
+                                    }
                                     else
                                         this.innerHTML = tree_;
                                 });
@@ -234,8 +246,10 @@ function doStuff(){
                                 var comm_ = '[comment added]';
                                 con.append(makeCommentElement(comm_id, escapeHtml(rebl.comment), comm_));
                                 $('#' + comm_id).click(function() { 
-                                    if(this.innerHTML == comm_)
+                                    if(this.innerHTML == comm_) {
                                         this.innerHTML += this.title; 
+                                        scrollToBottom(this);
+                                    }
                                     else
                                         this.innerHTML = comm_;
                                 });
