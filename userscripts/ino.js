@@ -245,24 +245,22 @@ function doStuff(){
                                 var tree_ = '[tree]';
                                 con.append(makeCommentElement(tree_id, escapeHtml(rebl.tree_html), tree_));
                                 $('#' + tree_id).click(function() { 
-                                    if(this.innerHTML == tree_) {
+                                    if(this.innerHTML == tree_) 
                                         this.innerHTML += this.title; 
-                                        scrollToBottom($('.article_expanded')[0]);
-                                    }
                                     else
                                         this.innerHTML = tree_;
+                                    scrollToBottom($('.article_expanded')[0]);
                                 });
                             }
                             if(rebl.comment.length > 0) {
                                 var comm_ = '[comment added]';
                                 con.append(makeCommentElement(comm_id, escapeHtml(rebl.comment), comm_));
                                 $('#' + comm_id).click(function() { 
-                                    if(this.innerHTML == comm_) {
+                                    if(this.innerHTML == comm_) 
                                         this.innerHTML += this.title; 
-                                        scrollToBottom($('.article_expanded')[0]);
-                                    }
                                     else
                                         this.innerHTML = comm_;
+                                    scrollToBottom($('.article_expanded')[0]);
                                 });
                             }
                         }
@@ -286,12 +284,11 @@ function doStuff(){
                     var notes_ = '[notes]';
                     con.append($('<div id="' + notes_id + '" title="' + nots + '">' + notes_ + '</div>')[0]);
                     $('#' + notes_id).click(function(){
-                        if(this.innerHTML == notes_) {
+                        if(this.innerHTML == notes_) 
                             this.innerHTML += this.title; 
-                            scrollToBottom($('.article_expanded')[0]);
-                        }
                         else
                             this.innerHTML = notes_;
+                        scrollToBottom($('.article_expanded')[0]);
                     });
                 }
 				
