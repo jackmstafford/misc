@@ -5,6 +5,7 @@ console.log('ino.js running');
 var con;
 var rIframe;
 var comm_id = 'jack_comm';
+var tree_id = 'jack_tree';
 var greeny = '#009688';
 
 function articleKeypress(e) {
@@ -17,6 +18,12 @@ function articleKeypress(e) {
             var comm = $('#' + comm_id);
             if(comm.length == 1)
                 $(comm[0]).click();
+        }
+        else if (e.which == 84 && e.shiftKey) { // T
+            // open tree
+            var tree = $('#' + tree_id);
+            if(tree.length == 1)
+                $(tree[0]).click();
         }
 		
 		else if (e.which == 76 && !e.shiftKey)  // l
@@ -69,6 +76,10 @@ function escapeHtml(text) {
 function makeLinkElement(src, text) {
 	var linkStyle = " style='color: green; font-size: 1.3em;' ";
     return $('<a ' + linkStyle + 'target="_blank" href="' + src + '">' + text + '</a>')[0];
+}
+
+function makeCommentElement(id, info, text) {
+    return $('<p style="color: #049cdb" id="' + id + '" title="' + info + '">' + text + '</p>')[0]);
 }
 
 function makeImageElement(src) {
@@ -198,9 +209,15 @@ function doStuff(){
 				var rbUrl = po.reblogged_from_url;
 				if(rbUrl !== undefined){
 					// added words
-					if(po.reblog !== undefined && po.reblog.comment.length > 0) {
-						con.append($('<p style="color: #049cdb" id="' + comm_id + '" title="' + escapeHtml(po.reblog.comment) + '">[comment added]</p>')[0]);
-						$('#' + comm_id).click(function() { this.innerHTML += this.title; });
+					if(po.reblog !== undefined) { 
+                        if(po.reblog.comment.length > 0) {
+                            con.append(makeCommentElement(comm_id, escapeHtml(po.reblog.comment), '[comment added]'));
+                            $('#' + comm_id).click(function() { this.innerHTML += this.title; });
+                        }
+                        if(po.reblog.tree_html !== undefined && po.body != po.reblog.tree_html) {
+                            con.append(makeCommentElement(tree_id, escapeHtml(po.reblog.tree_html), '[tree]'));
+                            $('#' + tree_id).click(function() { this.innerHTML += this.title; });
+                        }
 					}
 					
 					var rb = '<p><a target="_blank" style="font-size: .9em; color: ' + greeny + ';" href="' + rbUrl + '">' + po.reblogged_from_title + ': ' + po.reblogged_from_name + '</a></p>';
