@@ -210,14 +210,14 @@ function doStuff(){
 				if(rbUrl !== undefined){
 					// added words
 					if(po.reblog !== undefined) { 
-                        //re_blog = po.reblog;
-                        if(po.body != (po.reblog.tree_html + po.reblog.comment)) {
-                            if(po.body != po.reblog.tree_html) {
-                                con.append(makeCommentElement(tree_id, escapeHtml(po.reblog.tree_html), '[tree]'));
+                        var rebl = po.reblog;
+                        if(po.body.split('\n').join('') != rebl.tree_html + rebl.comment) {
+                            if(po.body != rebl.tree_html) {
+                                con.append(makeCommentElement(tree_id, escapeHtml(rebl.tree_html), '[tree]'));
                                 $('#' + tree_id).click(function() { this.innerHTML += this.title; });
                             }
-                            if(po.reblog.comment.length > 0) {
-                                con.append(makeCommentElement(comm_id, escapeHtml(po.reblog.comment), '[comment added]'));
+                            if(rebl.comment.length > 0) {
+                                con.append(makeCommentElement(comm_id, escapeHtml(rebl.comment), '[comment added]'));
                                 $('#' + comm_id).click(function() { this.innerHTML += this.title; });
                             }
                         }
