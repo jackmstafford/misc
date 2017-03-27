@@ -210,7 +210,7 @@ function doStuff(){
 				if(rbUrl !== undefined){
 					// added words
 					if(po.reblog !== undefined) { 
-                        re_blog = po.reblog;
+                        //re_blog = po.reblog;
                         if(po.body != (po.reblog.tree_html + po.reblog.comment)) {
                             if(po.body != po.reblog.tree_html) {
                                 con.append(makeCommentElement(tree_id, escapeHtml(po.reblog.tree_html), '[tree]'));
