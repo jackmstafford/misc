@@ -122,12 +122,17 @@ window.gotJSON = function(json) {
         // added words
         if(po.reblog !== undefined) { 
             var rebl = po.reblog;
-            if(rebl.tree_html.length > 0) {
+            if(rebl.tree_html.length > 0 && rebl.comment.length > 0) {
+                var comm_ = '[comment and tree]';
+                con.append(makeCommentElement(comm_id, escapeHtml(rebl.tree_html + rebl.comment), comm_));
+                $('#' + comm_id).click({text: comm_}, expandMe);
+            }
+            else if(rebl.tree_html.length > 0) {
                 var tree_ = '[tree]';
                 con.append(makeCommentElement(tree_id, escapeHtml(rebl.tree_html), tree_));
                 $('#' + tree_id).click({text: tree_}, expandMe);
             }
-            if(rebl.comment.length > 0) {
+            else if(rebl.comment.length > 0) {
                 var comm_ = '[comment added]';
                 con.append(makeCommentElement(comm_id, escapeHtml(rebl.comment), comm_));
                 $('#' + comm_id).click({text: comm_}, expandMe);
