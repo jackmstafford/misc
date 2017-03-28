@@ -25,11 +25,11 @@ function articleKeypress(e) {
 			scrollToTop(art_ex); // scroll to top of current article
 
         else if (e.which == 67 && e.shiftKey) // C
-            $('#' + comm_id).click(); // open comment
+            $('#' + comm_id)[0].click(); // open comment
         else if (e.which == 84 && e.shiftKey) // T
-            $('#' + tree_id).click(); // open tree
+            $('#' + tree_id)[0].click(); // open tree
         else if (e.which == 221 && e.shiftKey) // {
-            $('#' + notes_id).click(); // open notes
+            $('#' + notes_id)[0].click(); // open notes
 	}
 }
 
