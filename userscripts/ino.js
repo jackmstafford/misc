@@ -30,6 +30,9 @@ function articleKeypress(e) {
             $('#' + tree_id)[0].click(); // open tree
         else if (e.which == 221 && e.shiftKey) // {
             $('#' + notes_id)[0].click(); // open notes
+        else
+            return false;
+        return true;
 	}
 }
 
