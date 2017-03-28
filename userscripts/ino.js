@@ -4,6 +4,7 @@ console.log('ino.js running');
 
 var con;
 var rIframe;
+var tags; 
 var comm_id = 'jack_comm';
 var tree_id = 'jack_tree';
 var notes_id = 'jack_notes';
@@ -245,12 +246,12 @@ function doStuff(){
             if(tumb_url.includes('sbroxman'))
                 notes = '&notes_info=true';
 			var tur = "https://api.tumblr.com/v2/blog/" + blog_identifier + "/posts/?reblog_info=true&api_key=" + tumb_api_key + "&id=" + postId + notes;
-			var tags = "<div style='color: #be26d8; border-top: " + greeny + " dotted .2em'>";
+            tags = "<div style='color: #be26d8; border-top: " + greeny + " dotted .2em'>";
 			var aj = $.ajax({ dataType: "jsonp", url: tur, })
                     .success(gotJSON)
                     .fail(function() {
                         rIframe = null;
-                        con.append($(tags + '(POST DATA PULL FAILED)' + '</div>')[0]);
+                        con.append($(tags + '(POST DATA PULL FAILED)</div>')[0]);
                     });
 			$(con[0]).on("remove", function () { aj.abort(); });
 		}
