@@ -30,11 +30,7 @@ function articleKeypress(e) {
             $('#' + tree_id)[0].click(); // open tree
         else if (e.which == 221 && e.shiftKey) // {
             $('#' + notes_id)[0].click(); // open notes
-        else
-            return false;
-        return true;
 	}
-    return false;
 }
 
 function scrollToTop(element) {
@@ -51,6 +47,7 @@ window.expandMe = function(e) {
         this.innerHTML += this.title; 
     else
         this.innerHTML = text;
+    // TODO: possible scroll instead of definite based upon placement in viewport
     scrollToBottom($('.article_expanded')[0]);
 }
 
