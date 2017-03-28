@@ -51,6 +51,16 @@ function scrollToTop(element) {
 function scrollToBottom(element) {
     element.scrollIntoView(false);
 }
+window.expandMe = function() { 
+    console.log(event.data);
+    /*
+    if(this.innerHTML == tree_) 
+        this.innerHTML += this.title; 
+    else
+        this.innerHTML = tree_;
+    scrollToBottom($('.article_expanded')[0]);
+    */
+}
 
 // return a string diff of the dates
 function dateDiff(dat1, dat2) {
@@ -232,6 +242,8 @@ function doStuff(){
 					// added words
 					if(po.reblog !== undefined) { 
                         var rebl = po.reblog;
+                        // commented out because tumblr rss is BROKEN blerg
+                        /*
                         var body = '';
                         var ovp = Object.values(po);
                         for(var ovpi = 0; ovpi < ovp.length; ovpi++)
@@ -240,17 +252,13 @@ function doStuff(){
                                 && !ovp[ovpi].startsWith('http')
                                 && ovp[ovpi].length > body.length)
                                 body = ovp[ovpi].replace('<br/>', '<br>');
-                        if(body.length == 0 || body.split('\n').join('') != (rebl.tree_html + rebl.comment).split('\n').join('')) {
-                            if(rebl.tree_html.length > 0 && body != rebl.tree_html) {
+                        */
+                        //if(body.length == 0 || body.split('\n').join('') != (rebl.tree_html + rebl.comment).split('\n').join('')) {
+                            //if(rebl.tree_html.length > 0 && body != rebl.tree_html) {
+                            if(rebl.tree_html.length > 0) {
                                 var tree_ = '[tree]';
                                 con.append(makeCommentElement(tree_id, escapeHtml(rebl.tree_html), tree_));
-                                $('#' + tree_id).click(function() { 
-                                    if(this.innerHTML == tree_) 
-                                        this.innerHTML += this.title; 
-                                    else
-                                        this.innerHTML = tree_;
-                                    scrollToBottom($('.article_expanded')[0]);
-                                });
+                                $('#' + tree_id).click({text: tree_}, expandMe);
                             }
                             if(rebl.comment.length > 0) {
                                 var comm_ = '[comment added]';
@@ -263,7 +271,7 @@ function doStuff(){
                                     scrollToBottom($('.article_expanded')[0]);
                                 });
                             }
-                        }
+                        //}
 					}
 					
 					var rb = '<p><a target="_blank" style="font-size: .9em; color: ' + greeny + ';" href="' + rbUrl + '">' + po.reblogged_from_title + ': ' + po.reblogged_from_name + '</a></p>';
