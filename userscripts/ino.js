@@ -51,8 +51,8 @@ function scrollToTop(element) {
 function scrollToBottom(element) {
     element.scrollIntoView(false);
 }
-window.expandMe = function() { 
-    console.log(event.data);
+window.expandMe = function(e) { 
+    console.log(this);
     /*
     if(this.innerHTML == tree_) 
         this.innerHTML += this.title; 
