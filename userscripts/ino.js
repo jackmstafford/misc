@@ -24,25 +24,17 @@ function articleKeypress(e) {
 		else if (e.which == 186 && !e.shiftKey) // ;
 			scrollToTop(art_ex); // scroll to top of current article
 
-        else if (e.which == 67 && e.shiftKey) { // C
-            var c = $('#' + comm_id)
-            if(c.length == 1)
-                c[0].click(); // open comment
-        }
-        else if (e.which == 84 && e.shiftKey) { // T
-            var c = $('#' + tree_id)
-            if(c.length == 1)
-                c[0].click(); // open tree
-        }
-        else if (e.which == 221 && e.shiftKey) { // {
-            var c = $('#' + notes_id)
-            if(c.length == 1)
-                c[0].click(); // open notes
-        }
+        else if (e.which == 67 && e.shiftKey)  // C
+            $('#' + comm_id)[0].click(); // open comment
+        else if (e.which == 84 && e.shiftKey)  // T
+            $('#' + tree_id)[0].click(); // open tree
+        else if (e.which == 221 && e.shiftKey) // {
+            $('#' + notes_id)[0].click(); // open notes
         else
             return false;
         return true;
 	}
+    return false;
 }
 
 function scrollToTop(element) {
@@ -176,8 +168,12 @@ function doStuff(){
 	con = $('.article_content');
 
     // handle keydown and removal
-    $(document).keydown(articleKeypress);
-    $(con[0]).on("remove", function () { $(document).off('keydown', articleKeypress); });
+    var key_class = 'jack_key';
+    if(!con[0].hasClass(key_class)) {
+        con[0].addClass(key_class);
+        $(document).keydown(articleKeypress);
+        $(con[0]).on("remove", function () { $(document).off('keydown', articleKeypress); });
+    }
 	
 	// show article posted date
 	var hds = $('.header_date');
