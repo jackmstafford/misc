@@ -169,8 +169,8 @@ function doStuff(){
 
     // handle keydown and removal
     var key_class = 'jack_key';
-    if(!con[0].hasClass(key_class)) {
-        con[0].addClass(key_class);
+    if(con[0] !== undefined && !$(con[0]).hasClass(key_class)) {
+        $(con[0]).addClass(key_class);
         $(document).keydown(articleKeypress);
         $(con[0]).on("remove", function () { $(document).off('keydown', articleKeypress); });
     }
