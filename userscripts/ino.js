@@ -17,30 +17,18 @@ function articleKeypress(e) {
             scrollToTop(art_ex);
         }
 
-        else if (e.which == 67 && e.shiftKey) { // C
-            // open comment
-            var comm = $('#' + comm_id);
-            if(comm.length == 1)
-                $(comm[0]).click();
-        }
-        else if (e.which == 84 && e.shiftKey) { // T
-            // open tree
-            var tree = $('#' + tree_id);
-            if(tree.length == 1)
-                $(tree[0]).click();
-        }
-        else if (e.which == 221 && e.shiftKey) { // {
-            // open notes
-            var notee = $('#' + notes_id);
-            if(notee.length == 1)
-                $(notee[0]).click();
-        }
-		
 		else if (e.which == 76 && !e.shiftKey)  // l
 			scrollToBottom(art_ex); // scroll to bottom of current article
 		
 		else if (e.which == 186 && !e.shiftKey) // ;
 			scrollToTop(art_ex); // scroll to top of current article
+
+        else if (e.which == 67 && e.shiftKey) // C
+            $('#' + comm_id).click(); // open comment
+        else if (e.which == 84 && e.shiftKey) // T
+            $('#' + tree_id).click(); // open tree
+        else if (e.which == 221 && e.shiftKey) // {
+            $('#' + notes_id).click(); // open notes
 	}
 }
 
@@ -51,15 +39,14 @@ function scrollToTop(element) {
 function scrollToBottom(element) {
     element.scrollIntoView(false);
 }
+
 window.expandMe = function(e) { 
-    console.log(this);
-    /*
-    if(this.innerHTML == tree_) 
+    var text = e.data.text;
+    if(this.innerHTML == text) 
         this.innerHTML += this.title; 
     else
-        this.innerHTML = tree_;
+        this.innerHTML = text;
     scrollToBottom($('.article_expanded')[0]);
-    */
 }
 
 // return a string diff of the dates
@@ -114,9 +101,70 @@ function makeImageElement(src) {
     return $('<img style="max-width: 320px; max-height: 400px; border: 2px dashed ' + greeny + '" src="' + src + '">')[0];
 }
 
+window.gotJSON = function(json) {
+    var po = json.response.posts[0];
+    
+    // tags
+    var ts = po.tags;
+    for(var i = 0; i < ts.length; i++)
+        tags += '<br># ' + ts[i];
+    tags += '</div><br>';
+    con.append($(tags)[0]);
+    
+    //reblog info
+    var rbUrl = po.reblogged_from_url;
+    if(rbUrl !== undefined){
+        // added words
+        if(po.reblog !== undefined) { 
+            var rebl = po.reblog;
+            if(rebl.tree_html.length > 0) {
+                var tree_ = '[tree]';
+                con.append(makeCommentElement(tree_id, escapeHtml(rebl.tree_html), tree_));
+                $('#' + tree_id).click({text: tree_}, expandMe);
+            }
+            if(rebl.comment.length > 0) {
+                var comm_ = '[comment added]';
+                con.append(makeCommentElement(comm_id, escapeHtml(rebl.comment), comm_));
+                $('#' + comm_id).click({text: comm_}, expandMe);
+            }
+        }
+        
+        var rb = '<p><a target="_blank" style="font-size: .9em; color: ' + greeny + ';" href="' + rbUrl + '">' + po.reblogged_from_title + ': ' + po.reblogged_from_name + '</a></p>';
+        con.append($(rb)[0]);
+    }
+
+    // notes info
+    if(rbUrl === undefined && po.notes !== undefined) {
+        var nots = '';
+        var pon = Object.values(po.notes);
+        var counter = 0;
+        for(var noti = 0; noti < pon.length; noti++) {
+            if(pon[noti].added_text !== undefined)
+                nots += '<br>' + (counter++) + '. ' + pon[noti].added_text;
+            else if(pon[noti].reply_text !== undefined)
+                nots += '<br>' + (counter++) + '. ' + pon[noti].reply_text;
+        }
+        var notes_ = '[notes]';
+        con.append($('<div id="' + notes_id + '" title="' + nots + '">' + notes_ + '</div>')[0]);
+        $('#' + notes_id).click({text: notes_}, expandMe);
+    }
+    
+    // reblog button
+    var rbId = po.id;
+    var rbName = json.response.blog.name;
+    if(rbId !== undefined && rbName !== undefined) {
+        var ifSrc = 'https://www.tumblr.com/dashboard/iframe?tumblelogName=' + rbName + '&pid=' + rbId;
+        rIframe = $('<div><iframe style="width: 540px; height: 55px" src="' + ifSrc + '"></iframe></div>')[0];
+    }
+}
+
 //var doStuff = function() {
 function doStuff(){
 	con = $('.article_content');
+
+    // handle keydown and removal
+    $(document).keydown(articleKeypress);
+    $(con[0]).on("remove", function () { $(document).off('keydown', articleKeypress); });
 	
 	// show article posted date
 	var hds = $('.header_date');
@@ -150,30 +198,6 @@ function doStuff(){
 		// handle vine stuff
 		if(frame.src.includes("vine.co/v")){
 			frame.parentElement.replaceChild(makeLinkElement(frame.src, 'VINE'), frame);
-			//var thumbRequestUrl = 'https://vine.co/oembed.json?url=' + frame.src;
-			/*
-			$(frame).ajax({
-				dataType: "json",
-				url: url,
-			})
-			.done(function(json) {
-				var turl = json.thumbnail_url;
-				console.log(json);
-				var img = $('<img style="border: 2px dashed ' + greeny + '" width="320" src="' + turl + '">')[0];
-				el.appent(img);
-				frame.parentElement.replaceChild(el, frame);
-			});
-			frame.contentWindow.addEventListener("message", function(event) {
-				console.log(event);
-				console.log(this);
-			}, false);
-			frame.onload = function() {
-				console.log('frame loaded');
-				//console.log(this);
-				this.contentWindow.postMessage({}, url);
-			};
-			*/
-			//frame.contentWindow.postMessage( {}, url);
 		}
 	}
 	
@@ -222,101 +246,13 @@ function doStuff(){
                 notes = '&notes_info=true';
 			var tur = "https://api.tumblr.com/v2/blog/" + blog_identifier + "/posts/?reblog_info=true&api_key=" + tumb_api_key + "&id=" + postId + notes;
 			var tags = "<div style='color: #be26d8; border-top: " + greeny + " dotted .2em'>";
-			var aj = $.ajax({
-				dataType: "jsonp",
-				url: tur,
-			})
-			.success(function(json) {
-				var po = json.response.posts[0];
-				
-				// tags
-				var ts = po.tags;
-				for(var i = 0; i < ts.length; i++)
-					tags += '<br># ' + ts[i];
-				tags += '</div><br>';
-				con.append($(tags)[0]);
-				
-				//reblog info
-				var rbUrl = po.reblogged_from_url;
-				if(rbUrl !== undefined){
-					// added words
-					if(po.reblog !== undefined) { 
-                        var rebl = po.reblog;
-                        // commented out because tumblr rss is BROKEN blerg
-                        /*
-                        var body = '';
-                        var ovp = Object.values(po);
-                        for(var ovpi = 0; ovpi < ovp.length; ovpi++)
-                            if(ovp[ovpi] != null 
-                                && typeof(ovp[ovpi]) == 'string'
-                                && !ovp[ovpi].startsWith('http')
-                                && ovp[ovpi].length > body.length)
-                                body = ovp[ovpi].replace('<br/>', '<br>');
-                        */
-                        //if(body.length == 0 || body.split('\n').join('') != (rebl.tree_html + rebl.comment).split('\n').join('')) {
-                            //if(rebl.tree_html.length > 0 && body != rebl.tree_html) {
-                            if(rebl.tree_html.length > 0) {
-                                var tree_ = '[tree]';
-                                con.append(makeCommentElement(tree_id, escapeHtml(rebl.tree_html), tree_));
-                                $('#' + tree_id).click({text: tree_}, expandMe);
-                            }
-                            if(rebl.comment.length > 0) {
-                                var comm_ = '[comment added]';
-                                con.append(makeCommentElement(comm_id, escapeHtml(rebl.comment), comm_));
-                                $('#' + comm_id).click(function() { 
-                                    if(this.innerHTML == comm_) 
-                                        this.innerHTML += this.title; 
-                                    else
-                                        this.innerHTML = comm_;
-                                    scrollToBottom($('.article_expanded')[0]);
-                                });
-                            }
-                        //}
-					}
-					
-					var rb = '<p><a target="_blank" style="font-size: .9em; color: ' + greeny + ';" href="' + rbUrl + '">' + po.reblogged_from_title + ': ' + po.reblogged_from_name + '</a></p>';
-					con.append($(rb)[0]);
-				}
-
-                // notes info
-                if(rbUrl === undefined && po.notes !== undefined) {
-                    var nots = '';
-                    var pon = Object.values(po.notes);
-                    var counter = 0;
-                    for(var noti = 0; noti < pon.length; noti++) {
-                        if(pon[noti].added_text !== undefined)
-                            nots += '<br>' + (counter++) + '. ' + pon[noti].added_text;
-                        else if(pon[noti].reply_text !== undefined)
-                            nots += '<br>' + (counter++) + '. ' + pon[noti].reply_text;
-                    }
-                    var notes_ = '[notes]';
-                    con.append($('<div id="' + notes_id + '" title="' + nots + '">' + notes_ + '</div>')[0]);
-                    $('#' + notes_id).click(function(){
-                        if(this.innerHTML == notes_) 
-                            this.innerHTML += this.title; 
-                        else
-                            this.innerHTML = notes_;
-                        scrollToBottom($('.article_expanded')[0]);
+			var aj = $.ajax({ dataType: "jsonp", url: tur, })
+                    .success(gotJSON)
+                    .fail(function() {
+                        rIframe = null;
+                        con.append($(tags + '(POST DATA PULL FAILED)' + '</div>')[0]);
                     });
-                }
-				
-				// reblog button
-				var rbId = po.id;
-				var rbName = json.response.blog.name;
-				if(rbId !== undefined && rbName !== undefined) {
-					var ifSrc = 'https://www.tumblr.com/dashboard/iframe?tumblelogName=' + rbName + '&pid=' + rbId;
-					rIframe = $('<div><iframe style="width: 540px; height: 55px" src="' + ifSrc + '"></iframe></div>')[0];
-				}
-			})
-			.fail(function() {
-				rIframe = null;
-				con.append($(tags + '(POST DATA PULL FAILED)' + '</div>')[0]);
-			});
-			$(document).keydown(articleKeypress);
-			$(con[0]).on("remove", function () {
-				aj.abort();
-				$(document).off('keydown', articleKeypress);
-			});
+			$(con[0]).on("remove", function () { aj.abort(); });
 		}
 	}
 }
@@ -327,11 +263,3 @@ new MutationObserver(function(mutations){
 	childList: true,
 	subtree: true
 });
-
-/*
-$(window).on("message", function( event ){
-	//if (event.origin !== "https://vine.co") return;
-	if(event.data !== undefined)
-		console.log( event.data ); // Logs {name: "Someone", avatar: "url.jpg"}
-});
-*/
