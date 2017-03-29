@@ -23,9 +23,9 @@ function articleKeypress(e) {
 		else if (e.which == 186 && !e.shiftKey) // ;
 			scrollToTop(art_ex); // scroll to top of current article
 
-        else if (e.which == 67 && e.shiftKey)  // C
+        else if (e.which == 73 && !e.shiftKey)  // i
             $('#' + comm_id)[0].click(); // open comment/tree
-        else if (e.which == 221 && e.shiftKey) // {
+        else if (e.which == 219 && !e.shiftKey) // [
             $('#' + notes_id)[0].click(); // open notes
 	}
 }
