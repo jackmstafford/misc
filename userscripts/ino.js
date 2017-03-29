@@ -2,6 +2,10 @@
 
 console.log('ino.js running');
 
+var rph = $('#reader_pane').height() * 0.95;
+GM_addStyle('.article_content img { max-height: ' + rph + 'px !important; }');
+
+
 var con;
 var rIframe;
 var tags; 
