@@ -84,3 +84,15 @@ A.bluelink:link
 {
     border-bottom: #131313 thick solid !important;
 }
+
+blockquote {
+    margin: 1em !important; 
+    min-width: inherit;
+}
+.article_content {
+    word-break: normal !important; 
+    min-width: 200px;
+}
+#sinner_container {
+    display: none !important;
+}
