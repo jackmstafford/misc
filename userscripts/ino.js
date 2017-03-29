@@ -6,7 +6,6 @@ var con;
 var rIframe;
 var tags; 
 var comm_id = 'jack_comm';
-var tree_id = 'jack_tree';
 var notes_id = 'jack_notes';
 var greeny = '#009688';
 
@@ -25,9 +24,7 @@ function articleKeypress(e) {
 			scrollToTop(art_ex); // scroll to top of current article
 
         else if (e.which == 67 && e.shiftKey)  // C
-            $('#' + comm_id)[0].click(); // open comment
-        else if (e.which == 84 && e.shiftKey)  // T
-            $('#' + tree_id)[0].click(); // open tree
+            $('#' + comm_id)[0].click(); // open comment/tree
         else if (e.which == 221 && e.shiftKey) // {
             $('#' + notes_id)[0].click(); // open notes
 	}
@@ -119,29 +116,23 @@ window.gotJSON = function(json) {
         // added words
         if(po.reblog !== undefined) { 
             var rebl = po.reblog;
-            if(rebl.tree_html.length > 0 && rebl.comment.length > 0) {
-                var comm_ = '[comment and tree]';
-                con.append(makeCommentElement(comm_id, escapeHtml(rebl.tree_html + rebl.comment), comm_));
-                $('#' + comm_id).click({text: comm_}, expandMe);
-            }
-            else if(rebl.tree_html.length > 0) {
-                var tree_ = '[tree]';
-                con.append(makeCommentElement(tree_id, escapeHtml(rebl.tree_html), tree_));
-                $('#' + tree_id).click({text: tree_}, expandMe);
-            }
-            else if(rebl.comment.length > 0) {
-                var comm_ = '[comment added]';
-                con.append(makeCommentElement(comm_id, escapeHtml(rebl.comment), comm_));
-                $('#' + comm_id).click({text: comm_}, expandMe);
-            }
+            var comm_display_name = '';
+            if(rebl.tree_html.length > 0 && rebl.comment.length > 0) 
+                comm_display_name = '[tree and comment]';
+            else if(rebl.tree_html.length > 0) 
+                comm_display_name = '[tree]';
+            else if(rebl.comment.length > 0) 
+                comm_display_name = '[comment]';
+            var comm_text = escapeHtml(rebl.tree_html + rebl.comment);
+            con.append(makeCommentElement(comm_id, comm_text, comm_display_name));
+            $('#' + comm_id).click({text: comm_display_name}, expandMe);
         }
         
         var rb = '<p><a target="_blank" style="font-size: .9em; color: ' + greeny + ';" href="' + rbUrl + '">' + po.reblogged_from_title + ': ' + po.reblogged_from_name + '</a></p>';
         con.append($(rb)[0]);
     }
-
     // notes info
-    if(rbUrl === undefined && po.notes !== undefined) {
+    else if(po.notes !== undefined) {
         var nots = '';
         var pon = Object.values(po.notes);
         var counter = 0;
@@ -156,7 +147,7 @@ window.gotJSON = function(json) {
         $('#' + notes_id).click({text: notes_}, expandMe);
     }
     
-    // reblog button
+    // tumblr controls iframe
     var rbId = po.id;
     var rbName = json.response.blog.name;
     if(rbId !== undefined && rbName !== undefined) {
