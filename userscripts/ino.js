@@ -47,7 +47,7 @@ function scrollToBottom(element) {
     element.scrollIntoView(false);
 }
 
-window.selected_img;
+var selected_img = undefined;
 function scrollImg(forward) {
 	var imgs = $('.article_content img').toArray();
 	if(!forward) imgs.reverse();
