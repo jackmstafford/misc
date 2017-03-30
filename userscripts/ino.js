@@ -16,21 +16,26 @@ var greeny = '#009688';
 function articleKeypress(e) {
 	if(!(e.altKey || e.ctrlKey || e.metaKey)) {
         var art_ex = $('.article_expanded')[0];
-		if (rIframe !== null && e.which == 66 && e.shiftKey) { // uppercase b
+		if (rIframe !== null && e.which === 66 && e.shiftKey) { // uppercase b
 			con.prepend(rIframe); // add iframe to reblog
             scrollToTop(art_ex);
         }
 
-		else if (e.which == 76 && !e.shiftKey)  // l
+		else if (e.which === 76 && !e.shiftKey)  // l
 			scrollToBottom(art_ex); // scroll to bottom of current article
 		
-		else if (e.which == 186 && !e.shiftKey) // ;
+		else if (e.which === 186 && !e.shiftKey) // ;
 			scrollToTop(art_ex); // scroll to top of current article
 
-        else if (e.which == 73 && !e.shiftKey)  // i
+        else if (e.which === 73 && !e.shiftKey)  // i
             $('#' + comm_id)[0].click(); // open comment/tree
-        else if (e.which == 219 && !e.shiftKey) // [
+        else if (e.which === 73 && e.shiftKey) // I
             $('#' + notes_id)[0].click(); // open notes
+		
+		else if (e.which === 219 && !e.shiftKey) // [
+			scrollImg(false);
+		else if (e.which === 221 && !e.shiftKey) // ]
+			scrollImg(true);
 	}
 }
 
@@ -40,6 +45,39 @@ function scrollToTop(element) {
 
 function scrollToBottom(element) {
     element.scrollIntoView(false);
+}
+
+function scrollImg(forward) {
+	var imgs = $('.article_content img').toArray();
+	if(!forward) imgs.reverse();
+	var fir = imgs[0];
+	var previousVisible = false;
+	for(var im = 0; im < imgs.length; im++) {
+		var vis = isElementInViewport(imgs[im]);
+		if(previousVisible) {
+			previousVisible = false;
+			fir = imgs[im];
+		}
+		else if(vis)
+			previousVisible = true;
+	}
+	if(!vis)
+		scrollToTop(fir);
+}
+
+function isElementInViewport (el) {
+    if (typeof jQuery === "function" && el instanceof jQuery) {
+        el = el[0];
+    }
+
+    var rect = el.getBoundingClientRect();
+
+    return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
+    );
 }
 
 window.expandMe = function(e) { 
