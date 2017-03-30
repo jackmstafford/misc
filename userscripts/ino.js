@@ -22,7 +22,7 @@ function articleKeypress(e) {
         }
 
 		else if (e.which === 76 && !e.shiftKey)  // l
-			scrollToBottom(art_ex); // scroll to bottom of current article
+            scrollToBottomAfterCheck($('.article_tags')[0], art_ex); // scroll to bottom of current article
 
 		else if (e.which === 186 && !e.shiftKey) // ;
 			scrollToTop(art_ex); // scroll to top of current article
@@ -46,6 +46,13 @@ function scrollToTop(element) {
 function scrollToBottom(element) {
     element.scrollIntoView(false);
 }
+
+function scrollToBottomAfterCheck(visEl, element) {
+    // scroll to bottom of element if visEl not visible
+    if(visEl === undefined || !isElementInViewport(visEl)) 
+        scrollToBottom(element);
+}
+
 
 var selected_img = undefined;
 function scrollImg(forward) {
@@ -92,8 +99,7 @@ window.expandMe = function(e) {
         this.innerHTML += this.title; 
     else
         this.innerHTML = text;
-    // TODO: possible scroll instead of definite based upon placement in viewport
-    scrollToBottom($('.article_expanded')[0]);
+    scrollToBottomAfterCheck($('.article_tags')[0], $('.article_expanded')[0]);
 }
 
 // return a string diff of the dates
