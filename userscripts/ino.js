@@ -63,8 +63,10 @@ function scrollImg(forward) {
 				prevSelected = true;
 		}
 	}
-	else
+	else {
 		scrollToTop(imgs[0]);
+		selected_img = imgs[0];
+	}
 }
 
 function isElementInViewport (el) {
