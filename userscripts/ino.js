@@ -23,15 +23,15 @@ function articleKeypress(e) {
 
 		else if (e.which === 76 && !e.shiftKey)  // l
 			scrollToBottom(art_ex); // scroll to bottom of current article
-		
+
 		else if (e.which === 186 && !e.shiftKey) // ;
 			scrollToTop(art_ex); // scroll to top of current article
 
-        else if (e.which === 73 && !e.shiftKey)  // i
-            $('#' + comm_id)[0].click(); // open comment/tree
-        else if (e.which === 73 && e.shiftKey) // I
-            $('#' + notes_id)[0].click(); // open notes
-		
+		else if (e.which === 73 && !e.shiftKey)  // i
+			$('#' + comm_id)[0].click(); // open comment/tree
+		else if (e.which === 73 && e.shiftKey) // I
+			$('#' + notes_id)[0].click(); // open notes
+
 		else if (e.which === 219 && !e.shiftKey) // [
 			scrollImg(false);
 		else if (e.which === 221 && !e.shiftKey) // ]
@@ -47,22 +47,24 @@ function scrollToBottom(element) {
     element.scrollIntoView(false);
 }
 
+var selected_img;
 function scrollImg(forward) {
 	var imgs = $('.article_content img').toArray();
 	if(!forward) imgs.reverse();
-	var fir = imgs[0];
-	var previousVisible = false;
-	for(var im = 0; im < imgs.length; im++) {
-		var vis = isElementInViewport(imgs[im]);
-		if(previousVisible) {
-			previousVisible = false;
-			fir = imgs[im];
+	if(selected_img !== undefined){
+		var prevSelected = false;
+		for(var im = 0; im < imgs.length; im++) {
+			if(prevSelected) {
+				scrollToTop(imgs[im]);
+				selected_img = imgs[im];
+				break;
+			}
+			else if(selected_img === imgs[im])
+				prevSelected = true;
 		}
-		else if(vis)
-			previousVisible = true;
 	}
-	if(!vis)
-		scrollToTop(fir);
+	else
+		scrollToTop(imgs[0]);
 }
 
 function isElementInViewport (el) {
