@@ -51,6 +51,8 @@ var selected_img = undefined;
 function scrollImg(forward) {
 	var imgs = $('.article_content img').toArray();
 	if(!forward) imgs.reverse();
+	if(selected_img !== undefined && !imgs.includes(selected_img))
+		selected_img = undefined;
 	if(selected_img !== undefined){
 		var prevSelected = false;
 		for(var im = 0; im < imgs.length; im++) {
