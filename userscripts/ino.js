@@ -198,9 +198,9 @@ window.gotJSON = function(json) {
         var counter = 0;
         for(var noti = 0; noti < pon.length; noti++) {
             if(pon[noti].added_text !== undefined)
-                nots += '<br>' + (counter++) + '. ' + pon[noti].added_text;
+                nots += '<br>' + (counter++) + '. ' + escapeHtml(pon[noti].added_text);
             else if(pon[noti].reply_text !== undefined)
-                nots += '<br>' + (counter++) + '. ' + pon[noti].reply_text;
+                nots += '<br>' + (counter++) + '. ' + escapeHtml(pon[noti].reply_text);
         }
         var notes_ = '[notes]';
         con.append($('<div id="' + notes_id + '" title="' + nots + '">' + notes_ + '</div>')[0]);
