@@ -66,8 +66,6 @@ var selected_img = undefined;
 function scrollImg(forward) {
 	var imgs = $('.article_content img').toArray();
 	if(!forward) imgs.reverse();
-	if(selected_img !== undefined && !imgs.includes(selected_img))
-		selected_img = undefined;
 	if(selected_img !== undefined){
 		var prevSelected = false;
 		for(var im = 0; im < imgs.length; im++) {
@@ -227,7 +225,10 @@ function doStuff(){
     if(con[0] !== undefined && !$(con[0]).hasClass(key_class)) {
         $(con[0]).addClass(key_class);
         $(document).keydown(articleKeypress);
-        $(con[0]).on("remove", function () { $(document).off('keydown', articleKeypress); });
+        $(con[0]).on("remove", function () { 
+			selected_img = undefined;
+			$(document).off('keydown', articleKeypress); 
+		});
     }
 	
 	// show article posted date
