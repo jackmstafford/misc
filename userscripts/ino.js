@@ -39,7 +39,7 @@ function articleKeypress(e) {
         else if (e.which === 222 && !e.shiftKey) { // '
             if(!selected_img)
                 selected_img = $('.article_content img')[0];
-            if($('div:has(div + img + video + div):hidden')[0]) // if not displaying imagus media
+            if(!$('div:has(div + img + video + div)')[0]  || $('div:has(div + img + video + div):hidden')[0]) // if not displaying imagus media
                 selected_img.dispatchEvent(new MouseEvent('mouseover')); // simulate hover
             else // trigger imagus to stop displaying imagus media
                 $('#reader_pane')[0].dispatchEvent(new MouseEvent('mousemove', {clientX: '-1', clientY: '-1'})); 
