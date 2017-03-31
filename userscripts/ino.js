@@ -27,15 +27,17 @@ function articleKeypress(e) {
 		else if (e.which === 186 && !e.shiftKey) // ;
 			scrollToTop(art_ex); // scroll to top of current article
 
-		else if (e.which === 73 && !e.shiftKey)  // i
+		else if (e.which === 73 && !e.shiftKey && $('#' + comm_id)[0])  // i
 			$('#' + comm_id)[0].click(); // open comment/tree
-		else if (e.which === 73 && e.shiftKey) // I
+		else if (e.which === 73 && e.shiftKey && $('#' + notes_id)[0]) // I
 			$('#' + notes_id)[0].click(); // open notes
 
 		else if (e.which === 219 && !e.shiftKey) // [
-			scrollImg(false);
+			scrollImg(false); // scroll up one image
 		else if (e.which === 221 && !e.shiftKey) // ]
-			scrollImg(true);
+			scrollImg(true); // scroll down one image
+        else if (e.which === 222 && !e.shiftKey && selected_img) // '
+            selected_img.dispatchEvent(new MouseEvent('mouseover')); // simulate hover
 	}
 }
 
