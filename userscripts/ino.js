@@ -22,7 +22,7 @@ function articleKeypress(e) {
         }
 
 		else if (e.which === 76 && !e.shiftKey)  // l
-            scrollToBottomAfterCheck($('.article_tags')[0], art_ex); // scroll to bottom of current article
+            		scrollToArticleBottom(); // scroll to bottom of current article
 
 		else if (e.which === 186 && !e.shiftKey) // ;
 			scrollToTop(art_ex); // scroll to top of current article
@@ -61,6 +61,9 @@ function scrollToBottomAfterCheck(visEl, element) {
         scrollToBottom(element);
 }
 
+function scrollToArticleBottom(){
+    scrollToBottomAfterCheck($('.article_full_contents > .clearfix')[0], $('.article_expanded')[0]);
+}
 
 var selected_img = undefined;
 function scrollImg(forward) {
@@ -105,7 +108,7 @@ window.expandMe = function(e) {
         this.innerHTML += this.title; 
     else
         this.innerHTML = text;
-    scrollToBottomAfterCheck($('.article_tags')[0], $('.article_expanded')[0]);
+    scrollToArticleBottom();
 }
 
 // return a string diff of the dates
