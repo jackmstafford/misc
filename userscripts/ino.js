@@ -331,8 +331,10 @@ function doStuff(mutations){
 	}
 }
 
-$(new MutationObserver(function(mutations){ doStuff(mutations); })
+$(function() {
+    new MutationObserver(function(mutations){ doStuff(mutations); })
     .observe($('#reader_pane')[0], {
         childList: true,
         subtree: true
-});)
+    });
+});
