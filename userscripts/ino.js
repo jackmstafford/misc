@@ -219,8 +219,13 @@ window.gotJSON = function(json) {
     }
 }
 
-//var doStuff = function() {
-function doStuff(){
+function doStuff(mutations){
+    var addedSummit = false;
+    for(var mut in mutations)
+        if(mut.addedNodes.length > 0)
+            addedSummit = true;
+    if(!addedSummit) return;
+
 	con = $('.article_content');
 
     // handle keydown and removal
@@ -251,32 +256,33 @@ function doStuff(){
 	
 	// handle iframe stuff
 	var iffy = con.find('iframe');
-    var ass = 'jackson_handled';
 	for(var i = 0; i < iffy.length; i++) {
 		var frame = iffy[i];
+        var fsrc = frame.src;
 		
 		// avoid handling iframes infinitely
+        var ass = 'jackson_handled';
 		if($(frame).hasClass(ass)) continue;
 		$(frame).addClass(ass);
 		
+        var fele;
+
 		// handle audio 
-		if(frame.src.includes('audio') || frame.src.includes('soundcloud')) 
-			frame.parentElement.replaceChild(makeLinkElement(frame.src, 'AUDIO LINK'), frame);
+		if(fsrc.includes('audio') || fsrc.includes('soundcloud') || fsrc.includes('embed.spotify')) 
+			fele = makeLinkElement(fsrc, 'AUDIO LINK');
 		
 		// handle vine stuff
-		if(frame.src.includes("vine.co/v")){
-			frame.parentElement.replaceChild(makeLinkElement(frame.src, 'VINE'), frame);
-		}
+		if(fsrc.includes("vine.co/v"))
+			fele = makeLinkElement(fsrc, 'VINE');
+
+        frame.parentElement.replaceChild(fele, frame);
 	}
 	
 	// remove instagram SPACE
 	var ins = $("blockquote>div>p>a");
 	if(ins.length > 0 && ins[0].href.includes("instagram.com/p")) {
 		var p = ins[0];
-		$.ajax({
-			dataType: "jsonp",
-			url: "https://api.instagram.com/oembed/?url=" + p.href,
-		})
+		$.ajax({ dataType: "jsonp", url: "https://api.instagram.com/oembed/?url=" + p.href, })
 		.done(function(json) {
 			$(p).empty();
 			p.append(makeImageElement(json.thumbnail_url));
@@ -325,9 +331,8 @@ function doStuff(){
 	}
 }
 
-new MutationObserver(function(mutations){
-		doStuff();
-}).observe(document, {
-	childList: true,
-	subtree: true
-});
+$(new MutationObserver(function(mutations){ doStuff(mutations); })
+    .observe($('#reader_pane')[0], {
+        childList: true,
+        subtree: true
+});)
