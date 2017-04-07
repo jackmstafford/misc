@@ -221,9 +221,10 @@ window.gotJSON = function(json) {
 
 function doStuff(mutations){
     var addedSummit = false;
-    for(var mut in mutations)
-        if(mut.addedNodes.length > 0)
+    $(mutations).each(function() {
+        if(this.addedNodes.length > 0)
             addedSummit = true;
+    });
     if(!addedSummit) return;
 
 	con = $('.article_content');
