@@ -21,6 +21,9 @@ function articleKeypress(e) {
             scrollToTop(art_ex);
         }
 
+        else if (e.which == 86 && e.shiftKey) // V
+        	openBgTab($(art_ex).find('.article_title_link')[0].href);
+		
 		else if (e.which === 76 && !e.shiftKey)  // l
             		scrollToArticleBottom(); // scroll to bottom of current article
 
