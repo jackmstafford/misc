@@ -166,6 +166,17 @@ function makeImageElement(src) {
     return $('<img style="max-width: 320px; max-height: 400px; border: 2px dashed ' + greeny + '" src="' + src + '">')[0];
 }
 
+function removeAllAttributes(ele){
+	var notarr = ele.attributes;
+	attrs = [];
+	for(var i = 0; i < notarr.length; i++)
+		attrs[i] = notarr[i].name;
+	for(i = 0; i < attrs.length; i++)
+		ele.removeAttribute(attrs[i]);
+	for(i = 0; i < ele.children.length; i++)
+		removeAllAttributes(ele.children[i]);
+}
+
 window.gotJSON = function(json) {
     var po = json.response.posts[0];
     
@@ -189,9 +200,17 @@ window.gotJSON = function(json) {
                 comm_display_name = '[tree]';
             else if(rebl.comment.length > 0) 
                 comm_display_name = '[comment]';
-            var comm_text = escapeHtml(rebl.tree_html + rebl.comment);
-            con.append(makeCommentElement(comm_id, comm_text, comm_display_name));
-            $('#' + comm_id).click({text: comm_display_name}, expandMe);
+            var comm_text = rebl.tree_html + rebl.comment;
+			
+			var cc = $(con).clone()[0];
+			removeAllAttributes(cc);
+			var rb = $('<div>' + comm_text + '</div>')[0];
+			removeAllAttributes(rb);
+			var ccomp = cc.outerHTML.replace(/[\n\t]/g, '').replace(/> *</g, '><');
+			if(!comp.includes(rb.innerHTML)) {
+				con.append(makeCommentElement(comm_id, escapeHtml(comm_text), comm_display_name));
+				$('#' + comm_id).click({text: comm_display_name}, expandMe);
+			}
         }
         
         var rb = '<p><a target="_blank" style="font-size: .9em; color: ' + greeny + ';" href="' + rbUrl + '">' + po.reblogged_from_title + ': ' + po.reblogged_from_name + '</a></p>';
