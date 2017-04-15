@@ -207,7 +207,7 @@ window.gotJSON = function(json) {
 			var rb = $('<div>' + comm_text + '</div>')[0];
 			removeAllAttributes(rb);
 			var ccomp = cc.outerHTML.replace(/[\n\t]/g, '').replace(/> *</g, '><');
-			if(!comp.includes(rb.innerHTML)) {
+			if(!ccomp.includes(rb.innerHTML)) {
 				con.append(makeCommentElement(comm_id, escapeHtml(comm_text), comm_display_name));
 				$('#' + comm_id).click({text: comm_display_name}, expandMe);
 			}
