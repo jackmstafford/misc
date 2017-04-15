@@ -168,7 +168,7 @@ function makeImageElement(src) {
 
 function removeAllAttributes(ele){
 	var notarr = ele.attributes;
-	attrs = [];
+	var attrs = [];
 	for(var i = 0; i < notarr.length; i++)
 		attrs[i] = notarr[i].name;
 	for(i = 0; i < attrs.length; i++)
