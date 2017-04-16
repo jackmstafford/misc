@@ -177,6 +177,18 @@ function removeAllAttributes(ele){
 		removeAllAttributes(ele.children[i]);
 }
 
+function max(arr) { 
+	return Math.max.apply(null, arr); 
+}
+
+function min(arr) { 
+	return Math.min.apply(null, arr); 
+}
+
+function diff(arr) { 
+	return Math.abs(max(arr) - min(arr)); 
+}
+
 window.gotJSON = function(json) {
     var po = json.response.posts[0];
     
@@ -330,6 +342,12 @@ function doStuff(mutations){
 	var pp = $('.article_full_contents:has(.article_content)');
 	var assc = 'jackson_handled_tags';
 	if(pp.length > 0 && !$(con).hasClass(assc)) {
+		// make pics go side by side
+		var heights = $('.article_content>img').map(function() { return $(this).height() });
+		var widths = $('.article_content>img').map(function() { return $(this).width() });
+		if(heights.length % 2 == 0 && diff(heights) < 10 && diff(widths) < 10) 
+			con[0].innerHTML = con[0].innerHTML.replace(/(<img[^>]+>)(<br>)+/g, '$1');
+		
 		$(con).addClass(assc);
 		pp = pp[0];
 		var hre = $(pp).find('[id^="article_feed_info_link_"]')[0].href; // rss feed 
