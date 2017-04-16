@@ -96,7 +96,3 @@ blockquote {
 #sinner_container {
     display: none !important;
 }
-
-.article_content [src$='gif'] {
-    min-height: 13em !important;
-}
