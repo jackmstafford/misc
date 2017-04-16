@@ -177,16 +177,16 @@ function removeAllAttributes(ele){
 		removeAllAttributes(ele.children[i]);
 }
 
-function max(arr) { 
+function arrayMax(arr) { 
 	return Math.max.apply(null, arr); 
 }
 
-function min(arr) { 
+function arrayMin(arr) { 
 	return Math.min.apply(null, arr); 
 }
 
-function diff(arr) { 
-	return Math.abs(max(arr) - min(arr)); 
+function arrayDiff(arr) { 
+	return Math.abs(arrayMax(arr) - arrayMin(arr)); 
 }
 
 window.gotJSON = function(json) {
@@ -345,7 +345,7 @@ function doStuff(mutations){
 		// make pics go side by side
 		var heights = $('.article_content>img').map(function() { return $(this).height() });
 		var widths = $('.article_content>img').map(function() { return $(this).width() });
-		if(heights.length % 2 == 0 && diff(heights) < 10 && diff(widths) < 10) 
+		if(heights.length % 2 == 0 && arrayDiff(heights) < 10 && arrayDiff(widths) < 10) 
 			con[0].innerHTML = con[0].innerHTML.replace(/(<img[^>]+>)(<br>)+/g, '$1');
 		
 		$(con).addClass(assc);
