@@ -4,6 +4,7 @@ console.log('ino.js running');
 
 var rph = $('#reader_pane').height() * 0.95;
 $('head').append($('<style>.article_content img:not([src~="questionablecontent"]) { max-height: ' + rph + 'px !important; }</style>'));
+$('head').append($('<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">')[0]);
 
 
 var con;
