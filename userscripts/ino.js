@@ -234,7 +234,7 @@ window.gotJSON = function(json) {
         var nots = '';
         var pon = Object.values(po.notes);
         var counter = 0;
-        for(var noti = 0; noti < pon.length; noti++) {
+        for(var noti = pon.length - 1; noti >= 0; noti++) {
             if(pon[noti].added_text !== undefined)
                 nots += '<br>' + (counter++) + '. ' + escapeHtml(pon[noti].added_text);
             else if(pon[noti].reply_text !== undefined)
