@@ -31,10 +31,12 @@ function articleKeypress(e) {
 		else if (e.which === 186 && !e.shiftKey) // ;
 			scrollToTop(art_ex); // scroll to top of current article
 
-		else if (e.which === 73 && !e.shiftKey && $('#' + comm_id)[0])  // i
-			$('#' + comm_id)[0].click(); // open comment/tree
-		else if (e.which === 73 && e.shiftKey && $('#' + notes_id)[0]) // I
-			$('#' + notes_id)[0].click(); // open notes
+		else if (e.which === 73 && !e.shiftKey) { // i
+			if($('#' + comm_id)[0])  
+				$('#' + comm_id)[0].click(); // open comment/tree
+			else if ($('#' + notes_id)[0]) 
+				$('#' + notes_id)[0].click(); // open notes
+		}
 
 		else if (e.which === 219 && !e.shiftKey) // [
 			scrollImg(false); // scroll up one image
