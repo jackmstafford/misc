@@ -348,8 +348,8 @@ function doStuff(mutations){
 		// make pics go side by side
 		var heights = $('.article_content>img').map(function() { return $(this).height() });
 		var widths = $('.article_content>img').map(function() { return $(this).width() });
-		if(heights.length % 2 == 0 && arrayDiff(heights) < 10 && arrayDiff(widths) < 10) 
-			con[0].innerHTML = con[0].innerHTML.replace(/(<img[^>]+>)(<br>)+/g, '$1');
+		if(heights.length % 2 == 0 && arrayDiff(heights) < 5 && arrayDiff(widths) < 10) 
+			con[0].innerHTML = con[0].innerHTML.replace(/(<img[^>]+>)(<br>)+/g, '$1 &nbsp;');
 		
 		$(con).addClass(assc);
 		pp = pp[0];
