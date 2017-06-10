@@ -42,11 +42,14 @@ function articleKeypress(e) {
 			scrollImg(false); // scroll up one image
 		else if (e.which === 221 && !e.shiftKey) // ]
 			scrollImg(true); // scroll down one image
-        else if (e.which === 222 && !e.shiftKey) { // '
-            if(!selected_img)
+        else if (e.which === 222) { // ' or "
+            if(!e.shiftKey && !selected_img)
                 selected_img = $('.article_content img')[0];
+			var hover_me = selected_img;
+			if(e.shiftKey)
+				hover_me = $(".article_title>a")[0];
             if(!$('div:has(div + img + video + div)')[0]  || $('div:has(div + img + video + div):hidden')[0]) // if not displaying imagus media
-                selected_img.dispatchEvent(new MouseEvent('mouseover')); // simulate hover
+                hover_me.dispatchEvent(new MouseEvent('mouseover')); // simulate hover
             else // trigger imagus to stop displaying imagus media
                 $('#reader_pane')[0].dispatchEvent(new MouseEvent('mousemove', {clientX: '-1', clientY: '-1'})); 
         }
