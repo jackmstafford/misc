@@ -315,6 +315,10 @@ function doStuff(mutations){
 		// handle vine stuff
 		if(fsrc.includes("vine.co/v"))
 			fele = makeLinkElement(fsrc, 'VINE');
+		
+		// handle vimeo
+		if(fsrc.include('vimeo'))
+			fele = makeLinkElement(fsrc, 'VIMEO');
 
         frame.parentElement.replaceChild(fele, frame);
 	}
