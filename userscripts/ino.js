@@ -317,7 +317,7 @@ function doStuff(mutations){
 			fele = makeLinkElement(fsrc, 'VINE');
 		
 		// handle vimeo
-		if(fsrc.include('vimeo'))
+		if(fsrc.includes('vimeo'))
 			fele = makeLinkElement(fsrc, 'VIMEO');
 
         frame.parentElement.replaceChild(fele, frame);
