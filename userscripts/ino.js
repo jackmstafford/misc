@@ -295,6 +295,14 @@ function doStuff(mutations){
 		}
 	}
 	
+	// handle images unable to load over https
+	var images = con.find('img');
+	for(var imgC = 0; imgC < images.length; imgC++) {
+		var image = images[imgC];
+		if(image.naturalWidth == 'undefined' || image.naturalWidth == 0)
+			image.src = '//images.weserv.nl/?url=' + image.src.substr(image.src.indexOf(':') + 3);
+	}
+	
 	// handle iframe stuff
 	var iffy = con.find('iframe');
 	for(var i = 0; i < iffy.length; i++) {
