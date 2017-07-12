@@ -299,8 +299,9 @@ function doStuff(mutations){
 	var images = con.find('img');
 	for(var imgC = 0; imgC < images.length; imgC++) {
 		var image = images[imgC];
-		if(image.naturalWidth == 'undefined' || image.naturalWidth == 0)
-			image.src = '//images.weserv.nl/?url=' + image.src.substr(image.src.indexOf(':') + 3);
+		var proxy = '//images.weserv.nl/?url=';
+		if((image.src.includes('dw.com') || image.src.includes('kk.org')) && !image.src.includes(proxy))
+			image.src = proxy + image.src.substr(image.src.indexOf(':') + 3);
 	}
 	
 	// handle iframe stuff
