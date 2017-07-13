@@ -37,6 +37,13 @@ function articleKeypress(e) {
 			else if ($('#' + notes_id)[0]) 
 				$('#' + notes_id)[0].click(); // open notes
 		}
+		else if (e.which === 73 && e.shiftKey) { // I
+			// format nine pic stimboard 
+			$(con).find('img ~ br').remove();
+			$(con).find('img:nth-of-type(10)').remove();
+			var sz = '15em';
+			$(con).find('img').height(sz).width(sz).css('padding-right', '5px');
+		}
 
 		else if (e.which === 219 && !e.shiftKey) // [
 			scrollImg(false); // scroll up one image
