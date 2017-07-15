@@ -39,6 +39,7 @@ function articleKeypress(e) {
 		}
 		else if (e.which === 73 && e.shiftKey) { // I
 			// format nine pic stimboard 
+			con[0].innerHTML = con[0].innerHTML.replace(/ &nbsp;/g, '')
 			$(con).find('img ~ br').remove();
 			$(con).find('img:nth-of-type(10)').remove();
 			var sz = '15em';
