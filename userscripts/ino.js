@@ -88,43 +88,31 @@ function scrollToArticleBottom(){
 
 var selected_img = undefined;
 function scrollImg(forward) {
-	var imgs = $('.article_content img').toArray();
-	if(!forward) imgs.reverse();
-	if(selected_img !== undefined){
-		var prevSelected = false;
-		for(var im = 0; im < imgs.length; im++) {
-			if(prevSelected) {
-				scrollToTop(imgs[im]);
-				selected_img = imgs[im];
-				break;
-			}
-			else if(selected_img === imgs[im])
-				prevSelected = true;
-		}
-	}
-	else {
-		scrollToTop(imgs[0]);
-		selected_img = imgs[0];
-	}
+	selected_img = scrollItems(forward, 'img', selected_img);
 }
 
 var selected_link = undefined;
-var selected_link_class = 'jack_selected_link';
 function scrollLink(forward) {
-	var links = $(con).find('a').toArray();
-	if(!forward) links.reverse();
-	if(selected_link !== undefined){
-		$(selected_link).removeClass(selected_link_class);
-		var i = links.indexOf(selected_link);
+	var selected_link_class = 'jack_selected_link';
+	$(selected_link).removeClass(selected_link_class);
+	selected_link = scrollItems(forward, 'a', selected_link);
+	$(selected_link).addClass(selected_link_class);
+}
+
+function scrollItems(forward, identifier, selection){
+	var items = $(con).find(identifier).toArray();
+	if(!forward) items.reverse();
+	if(selection !== undefined){
+		var i = items.indexOf(selection);
 		if(i == -1) 
-			selected_link = links[0];
-		else if(i + 1 < links.length)
-			selected_link = links[i+1];
+			selection = items[0];
+		else if(i + 1 < items.length)
+			selection = items[i+1];
 	}
 	else
-		selected_link = links[0];
-	$(selected_link).addClass(selected_link_class);
-	scrollToTop(selected_link);
+		selection = items[0];
+	scrollToTop(selection);
+	return selection;
 }
 
 function isElementInViewport (el) {
