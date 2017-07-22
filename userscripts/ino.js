@@ -50,6 +50,10 @@ function articleKeypress(e) {
 			scrollImg(false); // scroll up one image
 		else if (e.which === 221 && !e.shiftKey) // ]
 			scrollImg(true); // scroll down one image
+		else if (e.which == 188) // , or <
+			scrollLink(!e.shiftKey); // scroll links
+		else if (e.which == 13 && e.shiftKey)
+			selected_link.click(); // open selected link
         else if (e.which === 222) { // ' or "
             if(!e.shiftKey && !selected_img)
                 selected_img = $('.article_content img')[0];
@@ -102,6 +106,25 @@ function scrollImg(forward) {
 		scrollToTop(imgs[0]);
 		selected_img = imgs[0];
 	}
+}
+
+var selected_link = undefined;
+var selected_link_class = 'jack_selected_link';
+function scrollLink(forward) {
+	var links = $(con).find('a').toArray();
+	if(!forward) links.reverse();
+	if(selected_link !== undefined){
+		$(selected_link).removeClass(selected_link_class);
+		var i = links.indexOf(selected_link);
+		if(i == -1) 
+			selected_link = links[0];
+		else if(i + 1 < links.length)
+			selected_link = links[i+1];
+	}
+	else
+		selected_link = links[0];
+	$(selected_link).addClass(selected_link_class);
+	scrollToTop(selected_link);
 }
 
 function isElementInViewport (el) {
