@@ -96,3 +96,7 @@ blockquote {
 #sinner_container {
     display: none !important;
 }
+
+.article_full_contents A.jack_selected_link {
+    color: #009688 !important
+}
