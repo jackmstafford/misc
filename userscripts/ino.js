@@ -183,6 +183,10 @@ function makeLinkElement(src, text) {
     return $('<a ' + linkStyle + 'target="_blank" href="' + src + '">' + text + '</a>')[0];
 }
 
+function makeVineElement(src) {
+	return $('<a target="_blank" href="' + src + '"><img src="https://vine.co/static/images/vine_glyph_2x.png"></a>')[0];
+}
+
 function makeCommentElement(id, info, text) {
     return $('<p style="color: #049cdb" id="' + id + '" title="' + info + '">' + text + '</p>')[0];
 }
@@ -342,7 +346,7 @@ function doStuff(mutations){
 		
 		// handle vine stuff
 		if(fsrc.includes("vine.co/v"))
-			fele = makeLinkElement(fsrc, 'VINE');
+			fele = makeVineElement(fsrc);
 		
 		// handle vimeo
 		if(fsrc.includes('vimeo'))
