@@ -18,7 +18,7 @@ function articleKeypress(e) {
 	if(!(e.altKey || e.ctrlKey || e.metaKey)) {
         var art_ex = $('.article_expanded')[0];
 		if (rIframe !== null && e.which === 66 && e.shiftKey) { // uppercase b
-			window.open(rIframe, '', 'width=540, height=100, left=500, top=400'); // open reblog window
+			window.open(rIframe, '', 'width=540, height=55, left=1200, top=200'); // open reblog window
             scrollToTop(art_ex);
         }
 
