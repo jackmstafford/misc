@@ -18,7 +18,7 @@ function articleKeypress(e) {
 	if(!(e.altKey || e.ctrlKey || e.metaKey)) {
         var art_ex = $('.article_expanded')[0];
 		if (rIframe !== null && e.which === 66 && e.shiftKey) { // uppercase b
-			con.prepend(rIframe); // add iframe to reblog
+			window.open(rIframe, '', 'width=540, height=100, left=500, top=400'); // open reblog window
             scrollToTop(art_ex);
         }
 
@@ -278,7 +278,8 @@ window.gotJSON = function(json) {
     var rbName = json.response.blog.name;
     if(rbId !== undefined && rbName !== undefined) {
         var ifSrc = 'https://www.tumblr.com/dashboard/iframe?tumblelogName=' + rbName + '&pid=' + rbId;
-        rIframe = $('<div><iframe style="width: 540px; height: 55px" src="' + ifSrc + '"></iframe></div>')[0];
+        // rIframe = $('<div><iframe style="width: 540px; height: 55px" src="' + ifSrc + '"></iframe></div>')[0];
+	rIframe = ifSrc;
     }
 }
 
