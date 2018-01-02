@@ -393,11 +393,10 @@ function doStuff(mutations){
 		
 		$(con).addClass(assc);
 		pp = pp[0];
-		var hre = $(pp).find('[id^="article_feed_info_link_"]')[0].href; // rss feed 
-		if(hre.includes("tumblr")) {
-			var postUrl = $(pp).find('.article_title_link')[0].href;
+		var postUrl = $(pp).find('.article_title_link')[0].href;
+		if(postUrl.includes("tumblr")) {
 			var postId = postUrl.match('post/(\\d+)')[1];
-			var tumb_url = hre.match('%2F%2F(.*)\.tumblr')[1];
+			var tumb_url = postUrl.match('%2F%2F(.*)\.tumblr')[1];
 			var blog_identifier = tumb_url + '.tumblr.com';
             var notes = '';
             if(tumb_url.includes('sbroxman'))
