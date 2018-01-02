@@ -396,7 +396,7 @@ function doStuff(mutations){
 		var postUrl = $(pp).find('.article_title_link')[0].href;
 		if(postUrl.includes("tumblr")) {
 			var postId = postUrl.match('post/(\\d+)')[1];
-			var tumb_url = postUrl.match('%2F%2F(.*)\.tumblr')[1];
+			var tumb_url = postUrl.match(':.{2}(.*)\.tumblr')[1];
 			var blog_identifier = tumb_url + '.tumblr.com';
             var notes = '';
             if(tumb_url.includes('sbroxman'))
