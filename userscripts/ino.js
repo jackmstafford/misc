@@ -17,10 +17,8 @@ var greeny = '#009688';
 function articleKeypress(e) {
 	if(!(e.altKey || e.ctrlKey || e.metaKey)) {
         var art_ex = $('.article_expanded')[0];
-		if (rIframe !== null && e.which === 66 && e.shiftKey) { // uppercase b
+		if (rIframe !== null && e.which === 66 && e.shiftKey)  // uppercase b
 			window.open(rIframe, '', 'width=540, height=55, left=1200, top=200'); // open reblog window
-            scrollToTop(art_ex);
-        }
 
         else if (e.which == 86 && e.shiftKey) // V
         	openBgTab($(art_ex).find('.article_title_link')[0].href);
