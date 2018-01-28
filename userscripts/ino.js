@@ -245,8 +245,9 @@ window.gotJSON = function(json) {
 			removeAllAttributes(cc);
 			var rb = $('<div>' + comm_text + '</div>')[0];
 			removeAllAttributes(rb);
-			var ccomp = cc.outerHTML.replace(/[\n\t]/g, '').replace(/> *</g, '><');
-			if(!ccomp.includes(rb.innerHTML)) {
+			var ccomp = cc.outerHTML.replace(/[\n\t\s]/g, '').replace(/> *</g, '><');
+			var ih = rb.innerHTML.replace(/[\n\t\s]/g, '').replace(/<figure>(<img>)<\/figure>/g, '$1');
+			if(!ccomp.includes(ih)) {
 				con.append(makeCommentElement(comm_id, escapeHtml(comm_text), comm_display_name));
 				$('#' + comm_id).click({text: comm_display_name}, expandMe);
 			}
