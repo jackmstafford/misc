@@ -73,7 +73,7 @@ function articleKeypress(e) {
 }
 
 function swapImgSrc(i, doLoad) {
-	let $i = i;
+	let $i = $(i);
 	let a = 'src';
 	let b = 'jsrc';
 	if(!doLoad) {
