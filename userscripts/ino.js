@@ -13,6 +13,7 @@ var tags;
 var comm_id = 'jack_comm';
 var notes_id = 'jack_notes';
 var greeny = '#009688';
+var stopImageLoading = false;
 
 function articleKeypress(e) {
 	if(!(e.altKey || e.ctrlKey || e.metaKey)) {
@@ -63,7 +64,35 @@ function articleKeypress(e) {
             else // trigger imagus to stop displaying imagus media
                 $('#reader_pane')[0].dispatchEvent(new MouseEvent('mousemove', {clientX: '-1', clientY: '-1'})); 
         }
+
+        else if(e.which === 81 && e.shiftKey)  	// Q
+        	stopImageLoading = !stopImageLoading;
+        else if(e.which === 76 && e.shiftKey)	// L
+        	loadImages();
 	}
+}
+
+function swapImgSrc(i, doLoad) {
+	let $i = i;
+	let a = 'src';
+	let b = 'jsrc';
+	if(!doLoad) {
+		a = b;
+		b = 'src';
+	}
+	let at = $i.attr(a);
+	if(at != undefined && at != '') 
+		return
+	$i.attr(a, $i.attr(b));
+	$i.attr(b, '');
+}
+
+function loadImages() {
+	$(con).find('img').each((i, v) => swapImgSrc(v, true))
+}
+
+function unloadImages() {
+	$(con).find('img').each((i, v) => swapImgSrc(v, false))
 }
 
 function scrollToTop(element) {
@@ -87,6 +116,7 @@ function scrollToArticleBottom(){
 var selected_img = undefined;
 function scrollImg(forward) {
 	selected_img = scrollItems(forward, 'img', selected_img);
+	swapImgSrc(selected_img, true);
 }
 
 var selected_link = undefined;
@@ -291,6 +321,9 @@ function doStuff(mutations){
     if(!addedSummit) return;
 
 	con = $('.article_content');
+	
+	if(stopImageLoading)
+		unloadImages();
 
     // handle keydown and removal
     var key_class = 'jack_key';
@@ -312,7 +345,7 @@ function doStuff(mutations){
 			$(hd.parentElement).addClass(hdAss);
 			var datR = hd.title.match('Date received: (.*)')[1];
 			var datP = hd.title.match('Date posted: (.*)')[1];
-			var diff = dateDiff(makeDate(datP), makeDate(datR));
+			var diff = 'm';//dateDiff(makeDate(datP), makeDate(datR));
 			if(diff.endsWith('d') || diff.endsWith('w'))
 				hd.innerHTML = 'Posted vs received: ' + diff;
 		}
