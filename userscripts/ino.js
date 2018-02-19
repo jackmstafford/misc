@@ -430,6 +430,10 @@ function doStuff(mutations){
 			var postUrl = $(pp).find('.article_title_link')[0].href;
 			var postId = postUrl.match('post/(\\d+)')[1];
 			var tumb_url = urls[0].href.match('.*:.{2}(.*%2F%2F)?(.*)\.tumblr\.com')[2];
+			if(kold.includes(tumb_url)) {
+				tumb_url = kurrent;
+				$(pp).find('.article_title_link')[0].href = 'https://' + tumb_url + '.tumblr.com/post/' + postId;	
+			}
 			var blog_identifier = tumb_url + '.tumblr.com';
             var notes = '';
             if(tumb_url.includes('sbroxman'))
