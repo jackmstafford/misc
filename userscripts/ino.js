@@ -158,6 +158,10 @@ function isElementInViewport (el) {
     );
 }
 
+window.select20 = function() {
+	$('#feed_log_dialog td:nth-of-type(3):contains(20)').css('cssText', 'background-color: red !important');
+}
+
 window.expandMe = function(e) { 
     var text = e.data.text;
     if(this.innerHTML == text) 
