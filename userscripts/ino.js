@@ -303,8 +303,7 @@ window.gotTumblrJson = function(json) {
         .replace(/[\n\t\s]/g, '')
         .replace(/<figure>(<img>)<\/figure>/g, '$1');
       if(!ccomp.includes(ih)) {
-        $con.append(makeCommentElement(
-          comm_id, escapeHtmlCharacters(comm_text), comm_display_name));
+        $con.append(makeCommentElement(comm_id, comm_text, comm_display_name));
       }
     }
 
@@ -433,7 +432,7 @@ function doStuff(mutations){
     const widths = $articleImages.map((_, $img) => $img.width());
     if(heights.length % 2 == 0 && arrayDiff(heights) < 5 && arrayDiff(widths) < 10) 
       $con.html($con.html().replace(/(<img[^>]+>)(<br>)+/g, '$1 &nbsp;'));
-    
+
     $con.addClass(assc);
     const fullTumbUrl =
       $pp.find('[id^="article_"][href*="tumblr"]').attr('href');
