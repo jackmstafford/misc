@@ -432,8 +432,8 @@ function doStuff(mutations){
   if($pp.length > 0 && !$con.hasClass(assc)) {
     // make pics go side by side
     const $articleImages = $con.find('>img').map((_, img) => $(img));
-    const heights = $articleImages.map($img => $img.height());
-    const widths = $articleImages.map($img => $img.width());
+    const heights = $articleImages.map((_, $img) => $img.height());
+    const widths = $articleImages.map((_, $img) => $img.width());
     if(heights.length % 2 == 0 && arrayDiff(heights) < 5 && arrayDiff(widths) < 10) 
       $con.html($con.html().replace(/(<img[^>]+>)(<br>)+/g, '$1 &nbsp;'));
     
