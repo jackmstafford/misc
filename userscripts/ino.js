@@ -134,7 +134,8 @@ function scrollToBottomAfterCheck(visEl, element) {
 }
 
 function scrollToArticleBottom(){
-  scrollToBottomAfterCheck($('.article_full_contents > .clearfix')[0], $('.article_expanded')[0]);
+  scrollToBottomAfterCheck(
+    $('.article_full_contents > .article_tags')[0], $('.article_expanded')[0]);
 }
 
 let selected_img = undefined;
