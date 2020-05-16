@@ -154,6 +154,8 @@ const clamp = (min, num, max) => Math.min(Math.max(num, min), max);
 function scrollItems(forward, identifier) {
   const selectorClass = 'jack_selected';
   const $items = $con.find(identifier);
+  if ($items.size() === 0)
+    return;
   const index = Math.max($items.index(`.${selectorClass}`), 0);
   $items.removeClass(selectorClass);
   const nextI = index + (forward ? 1 : -1);
@@ -421,13 +423,13 @@ function doStuff(mutations){
       sour += ".mp4";
     const $aa = makeLinkElement(sour, '')
       .append(makeImageElement(vid[0].poster));
-    vid[0].parentElement.replaceChild($aa, vid[0]);
+    vid[0].parentElement.replaceChild($aa[0], vid[0]);
   }
 
   // get tumblr post data
   const assc = 'jackson_handled_tags';
-  const $pp = $(`.article_full_contents:not(.${assc})`).has($con);
-  if($pp.length > 0) {
+  const $pp = $('.article_full_contents').has($con);
+  if($pp.length > 0 && !$con.hasClass(assc)) {
     // make pics go side by side
     const $articleImages = $con.find('>img').map(img => $(img));
     const heights = $articleImages.map($img => $img.height());
