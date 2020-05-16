@@ -139,13 +139,13 @@ function scrollToArticleBottom(){
 
 let selected_img = undefined;
 function scrollImg(forward) {
-  selected_img = scrollItems(forward, 'img', selected_img);
+  selected_img = scrollItems(forward, 'img, video');
   swapImgSrc(selected_img, true);
 }
 
 let selected_link = undefined;
 function scrollLink(forward) {
-  selected_link = scrollItems(forward, 'a', selected_link);
+  selected_link = scrollItems(forward, 'a');
 }
 
 const clamp = (min, num, max) => Math.min(Math.max(num, min), max);
