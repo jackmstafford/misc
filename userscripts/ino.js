@@ -255,8 +255,8 @@ const makeImageElement = (src) => $('<img/>')
 
 function removeAllAttributes(ele){
   const attrs = ele.attributes;
-	for(let i = 0; i < attrs.length; i++)
-		ele.removeAttribute(attrs[i].name);
+  while (attrs.length > 0)
+		ele.removeAttribute(attrs[0].name);
   for(const child of ele.children)
     removeAllAttributes(child);
 }
@@ -296,11 +296,11 @@ window.gotTumblrJson = function(json) {
       removeAllAttributes(conClone);
       const comm_element = $('<div>').text(comm_text)[0];
       removeAllAttributes(comm_element);
-      const ccomp = conClone.outerHTML
-        .replace(/[\n\t\s]/g, '')
+      const ccomp = conClone.innerHTML
+        .replace(/[\n\t\s]+/g, ' ')
         .replace(/> *</g, '><');
       const ih = comm_element.innerHTML
-        .replace(/[\n\t\s]/g, '')
+        .replace(/[\n\t\s]+/g, ' ')
         .replace(/<figure>(<img>)<\/figure>/g, '$1');
       if(!ccomp.includes(ih)) {
         $con.append(makeCommentElement(comm_id, comm_text, comm_display_name));
