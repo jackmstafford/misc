@@ -1,87 +1,70 @@
 #wraper *:not(.article_stripe), 
 .inno_toolbar_button_menu, 
 .inno_toolbar_button_menu *, 
-.inno_dialog * 
-{
+.inno_dialog * {
     background-color: black !important;
 }
 
-.inno_dialog 
-{
+.inno_dialog {
     border: thin solid #444444 !important;
 }
-#loader_div 
-{
+#loader_div {
     color: #e0e0e0 !important; 
     border: thin #2d2d2d solid !important; 
     background-color: #131313 !important;
 }
 
-::-webkit-scrollbar 
-{
+::-webkit-scrollbar {
     width: .35em !important;
 }
-::-webkit-scrollbar-thumb 
-{
+::-webkit-scrollbar-thumb {
     background-color: #2d2d2d !important;
 }
-::-webkit-scrollbar-track-piece 
-{
+::-webkit-scrollbar-track-piece {
     background-color: #191919 !important;
 }
 
-A.bluelink:link 
-{
+A.bluelink:link {
     color: #be26d8 !important;
 }
-.article_stripe 
-{
+.article_stripe {
     background-color: #009688 !important;
 }
 
-// border sty:
-// #131313 thick solid
-.reader_pane_sinner 
-{
+/* border sty: */
+/* #131313 thick solid */
+.reader_pane_sinner {
     padding-right: 0px !important;
 }
-.ar 
-{
+.ar {
     max-width: 60em !important; 
     border-left: none !important;
     border-right: #131313 thick solid !important;
 }
-.article_expanded 
-{
+.article_expanded {
     border-top: #131313 thick solid !important; 
     border-bottom: #131313 thick solid !important;
 }
-.articles_feed_group_heading 
-{
+.articles_feed_group_heading {
     max-width: 53.5em !important; 
     border: none !important;
 }
-.articles_feed_group_heading_title 
-{
+.articles_feed_group_heading_title {
     top: 0 !important;
 }
 
-.parent_div_inner_selected 
-{
+.parent_div_inner_selected {
     border: #404040 thin solid !important;
 }
-.parent_div_inner_focused, .article_current_collapsed 
-{
+.parent_div_inner_focused, .article_current_collapsed {
     border-top: #606060 thin dotted !important;
     border-bottom: #606060 thin dotted !important;
 }
 
-#tree_pane 
-{
+#tree_pane {
     border-right: #131313 thick solid !important;
 }
-#subscriptions_buttons 
-{
+#subscriptions_buttons {
     border-bottom: #131313 thick solid !important;
 }
 
@@ -99,4 +82,8 @@ blockquote {
 
 .article_full_contents A.jack_selected_link {
     color: #009688 !important
+}
+
+.article_footer_placeholder_middle_sticky {
+    position: relative !important;
 }
