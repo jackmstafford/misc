@@ -261,6 +261,12 @@ function removeAllAttributes(ele){
     removeAllAttributes(child);
 }
 
+const getAndStripHtml = ($ele) => {
+  const ele = $ele[0];
+  removeAllAttributes(ele);
+  return ele.innerHTML.replace(/[\n\t\s]+/g, '');
+};
+
 const arrayMax = (arr) => Math.max(...arr); 
 const arrayMin = (arr) => Math.min(...arr);
 const arrayDiff = (arr) => Math.abs(arrayMax(arr) - arrayMin(arr)); 
@@ -284,26 +290,18 @@ window.gotTumblrJson = function(json) {
   if(reblogged_from_url != null){
     // added words
     if(reblog != null) { 
-      const comm_array = [];
-      if(reblog.tree_html.length > 0) 
-        comm_array.push('tree');
-      if(reblog.comment.length > 0) 
-        comm_array.push('comment');
-      const comm_display_name = `[${comm_array.join(' and ')}]`;
-      const comm_text = reblog.tree_html + reblog.comment;
-
-      const conClone = $con.clone()[0];
-      removeAllAttributes(conClone);
-      const comm_element = $('<div>').text(comm_text)[0];
-      removeAllAttributes(comm_element);
-      const ccomp = conClone.innerHTML
-        .replace(/[\n\t\s]+/g, ' ')
-        .replace(/> *</g, '><');
-      const ih = comm_element.innerHTML
-        .replace(/[\n\t\s]+/g, ' ')
+      const strippedCon = getAndStripHtml($con.clone()).replace(/> *</g, '><');
+      const commentHtml = reblog.tree_html + reblog.comment;
+      const strippedComment = getAndStripHtml($('<div>').html(commentHtml))
         .replace(/<figure>(<img>)<\/figure>/g, '$1');
-      if(!ccomp.includes(ih)) {
-        $con.append(makeCommentElement(comm_id, comm_text, comm_display_name));
+      if(!strippedCon.includes(strippedComment)) {
+        const commentNameArray = [];
+        if(reblog.tree_html.length > 0) 
+          commentNameArray.push('tree');
+        if(reblog.comment.length > 0) 
+          commentNameArray.push('comment');
+        const commentName = `[${commentNameArray.join(' and ')}]`;
+        $con.append(makeCommentElement(comm_id, commentHtml, commentName));
       }
     }
 
