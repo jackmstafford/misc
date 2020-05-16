@@ -36,7 +36,7 @@ function articleKeypress(e) {
     return;
 
   const $art_ex = $('.article_expanded');
-  const rbIframe = $con.hasAttr(rbIframeSrc);
+  const rbIframe = $con.attr(rbIframeSrc);
   if (rbIframe != null && e.which === Keys.b && e.shiftKey)
     // open reblog window
     window.open(rbIframe, '', 'width=540, height=55, left=1200, top=200');
@@ -254,9 +254,9 @@ const makeImageElement = (src) => $('<img/>')
   .attr('src', src);
 
 function removeAllAttributes(ele){
-  const attrs = ele.attributes.map(el => el.name);
-  for(const attr of attrs)
-    ele.removeAttribute(attr);
+  const attrs = ele.attributes;
+	for(let i = 0; i < attrs.length; i++)
+		ele.removeAttribute(attrs[i].name);
   for(const child of ele.children)
     removeAllAttributes(child);
 }
