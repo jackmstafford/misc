@@ -158,7 +158,9 @@ function scrollItems(forward, identifier) {
   if ($items.size() === 0)
     return;
   const $currentSelection = $items.filter(`.${selectorClass}`);
-  const index = Math.max($items.index($currentSelection), 0);
+  const index = $items.index($currentSelection);
+  if (!forward && index === -1)
+    index = $items.size();
   $items.removeClass(selectorClass);
   const nextI = index + (forward ? 1 : -1);
   const nextEl = $items[clamp(0, nextI, $items.size() - 1)];
