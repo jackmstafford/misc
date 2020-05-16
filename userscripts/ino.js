@@ -188,10 +188,7 @@ window.expandMe = function(e) {
   const $this = $(this);
   const expanded = $this.attr('expanded');
   const minimized = $this.attr('minimized');
-  if(this.innerHTML === minimized) 
-    this.innerHTML += expanded; 
-  else
-    this.innerHTML = minimized;
+  $this.html(minimized + (this.innerHTML === minimized ? expanded : ''));
   scrollToArticleBottom();
 }
 
@@ -268,11 +265,11 @@ const arrayMax = (arr) => Math.max(...arr);
 const arrayMin = (arr) => Math.min(...arr);
 const arrayDiff = (arr) => Math.abs(arrayMax(arr) - arrayMin(arr)); 
 
-const appendTagDiv = (text) => {
+const appendTagDiv = (html) => {
   const $div = $('<div>')
     .css('color', '#be26d8')
     .css('border-top', greeny + ' dotted .2em')
-    .text(text);
+    .html(html);
   $con.append($div);
 }
 
@@ -280,8 +277,7 @@ window.gotTumblrJson = function(json) {
   const post = json.response.posts[0];
   
   // tags
-  const brHash = '<br># ';
-  appendTagDiv((post.tags.length === 0 ? '' : brHash) + post.tags.join(brHash));
+  appendTagDiv((post.tags.length === 0 ? '' : '#') + post.tags.join('<br>#'));
   
   // reblog info
   const { reblog, reblogged_from_url } = post;
