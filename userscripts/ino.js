@@ -2,463 +2,472 @@
 
 console.log('ino.js running');
 
-var rph = $('#reader_pane').height() * 0.95;
-$('head').append($('<style>.article_content img:not([src~="questionablecontent"]) { max-height: ' + rph + 'px !important; }</style>'));
-$('head').append($('<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">')[0]);
+const $readerPane = $('#reader_pane');
+const rph = $readerPane.height() * 0.95;
+$('head').append(
+  $('<style/>').text(`.article_content img:not([src~="questionablecontent"]) { max-height: ${rph}px !important; }`),
+  $('<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">'),
+);
 
 
-var con;
-var rIframe;
-var tags; 
-var comm_id = 'jack_comm';
-var notes_id = 'jack_notes';
-var greeny = '#009688';
-var stopImageLoading = false;
+let $con;
+const rbIframeSrc = 'rbIframeSrc';
+const comm_id = 'jack_comm';
+const notes_id = 'jack_notes';
+const comm_or_notes_selector = `#${comm_id}, #${notes_id}`;
+const greeny = '#009688';
+let stopImageLoading = false;
+
+const Keys = {
+  b: 66,
+  i: 73,
+  l: 76,
+  q: 81,
+  v: 86,
+  ';': 186,
+  ',': 188,
+  '[': 219,
+  ']': 221,
+  "'": 222,
+};
 
 function articleKeypress(e) {
-	if(!(e.altKey || e.ctrlKey || e.metaKey)) {
-        var art_ex = $('.article_expanded')[0];
-		if (rIframe !== null && e.which === 66 && e.shiftKey)  // uppercase b
-			window.open(rIframe, '', 'width=540, height=55, left=1200, top=200'); // open reblog window
+  if(e.altKey || e.ctrlKey || e.metaKey)
+    return;
 
-        else if (e.which == 86 && e.shiftKey) // V
-        	openBgTab($(art_ex).find('.article_title_link')[0].href);
-		
-		else if (e.which === 76 && !e.shiftKey)  // l
-            		scrollToArticleBottom(); // scroll to bottom of current article
+  const $art_ex = $('.article_expanded');
+  const rbIframe = $con.hasAttr(rbIframeSrc);
+  if (rbIframe != null && e.which === Keys.b && e.shiftKey)
+    // open reblog window
+    window.open(rbIframe, '', 'width=540, height=55, left=1200, top=200');
 
-		else if (e.which === 186 && !e.shiftKey) // ;
-			scrollToTop(art_ex); // scroll to top of current article
+  else if (e.which == Keys.v && e.shiftKey)
+    openBgTab($art_ex.find('.article_title_link').attr('href'));
+  
+  else if (e.which === Keys.l && !e.shiftKey)
+    // scroll to bottom of current article
+    scrollToArticleBottom();
 
-		else if (e.which === 73 && !e.shiftKey) { // i
-			if($('#' + comm_id)[0])  
-				$('#' + comm_id)[0].click(); // open comment/tree
-			else if ($('#' + notes_id)[0]) 
-				$('#' + notes_id)[0].click(); // open notes
-		}
-		else if (e.which === 73 && e.shiftKey) { // I
-			// format nine pic stimboard 
-			con[0].innerHTML = con[0].innerHTML.replace(/ &nbsp;/g, '')
-			$(con).find('img ~ br').remove();
-			$(con).find('img:nth-of-type(10)').remove();
-			var sz = '15em';
-			$(con).find('img').height(sz).width(sz).css('padding-right', '5px');
-		}
+  else if (e.which === Keys[';'] && !e.shiftKey)
+    // scroll to top of current article
+    scrollToTop($art_ex[0]);
 
-		else if (e.which === 219 && !e.shiftKey) // [
-			scrollImg(false); // scroll up one image
-		else if (e.which === 221 && !e.shiftKey) // ]
-			scrollImg(true); // scroll down one image
-		else if (e.which == 188) // , or <
-			scrollLink(!e.shiftKey); // scroll links
-		else if (e.which == 13 && e.shiftKey)
-			selected_link.click(); // open selected link
-        else if (e.which === 222) { // ' or "
-            if(!e.shiftKey && !selected_img)
-                selected_img = $('.article_content img')[0];
-			var hover_me = selected_img;
-			if(e.shiftKey)
-				hover_me = $(".article_title>a")[0];
-            if(!$('div:has(div + img + video + div)')[0]  || $('div:has(div + img + video + div):hidden')[0]) // if not displaying imagus media
-                hover_me.dispatchEvent(new MouseEvent('mouseover')); // simulate hover
-            else // trigger imagus to stop displaying imagus media
-                $('#reader_pane')[0].dispatchEvent(new MouseEvent('mousemove', {clientX: '-1', clientY: '-1'})); 
-        }
+  else if (e.which === Keys.i && !e.shiftKey)
+    // open comment/tree or notes
+    $(comm_or_notes_selector).click();
 
-        else if(e.which === 81 && e.shiftKey)  	// Q
-        	stopImageLoading = !stopImageLoading;
-        else if(e.which === 76 && e.shiftKey)	// L
-        	loadImages();
-	}
+  else if (e.which === Keys.i && e.shiftKey)
+    formatStimboard();
+
+  else if (e.which === Keys['['] && !e.shiftKey)
+    // scroll up one image
+    scrollImg(false);
+  else if (e.which === Keys[']'] && !e.shiftKey)
+    // scroll down one image
+    scrollImg(true);
+  else if (e.which == Keys[','])
+    // scroll links
+    scrollLink(!e.shiftKey);
+  else if (e.which == 13 && e.shiftKey)
+    // open selected link
+    selected_link.click();
+  else if (e.which === Keys["'"]) { // ' or "
+    if(!e.shiftKey && !selected_img)
+      selected_img = $('.article_content img')[0];
+    var hover_me = selected_img;
+    if(e.shiftKey)
+      hover_me = $(".article_title>a")[0];
+    // if not displaying imagus media
+    if(!$('div:has(div + img + video + div)')[0] ||
+        $('div:has(div + img + video + div):hidden')[0])
+      $(hover_me).mouseover(); // simulate hover
+    else // trigger imagus to stop displaying imagus media
+      $readerPane.mousemove();
+  }
+
+  else if(e.which === Keys.q && e.shiftKey)
+    stopImageLoading = !stopImageLoading;
+  else if(e.which === Keys.l && e.shiftKey)
+    loadImages();
 }
 
-function swapImgSrc(i, doLoad) {
-	let $i = $(i);
-	let a = 'src';
-	let b = 'jsrc';
-	if(!doLoad) {
-		a = b;
-		b = 'src';
-	}
-	let at = $i.attr(a);
-	if(at != undefined && at != '') 
-		return
-	$i.attr(a, $i.attr(b));
-	$i.attr(b, '');
+function formatStimboard() {
+  // format nine pic stimboard 
+  $con.html($con.html().replace(/ &nbsp;/g, ''));
+  $con.find('img ~ br').remove();
+  $con.find('img:nth-of-type(10)').remove();
+  var sz = '15em';
+  $con.find('img').height(sz).width(sz).css('padding-right', '5px');
 }
 
-function loadImages() {
-	$(con).find('img').each((i, v) => swapImgSrc(v, true))
+function swapImgSrc(img, doLoad) {
+  let $img = $(img);
+  let a = 'src';
+  let b = 'jsrc';
+  if(!doLoad) {
+    a = b;
+    b = 'src';
+  }
+  let at = $img.attr(a);
+  if(at != null && at !== '') 
+    return;
+  $img.attr(a, $img.attr(b));
+  $img.attr(b, '');
 }
 
-function unloadImages() {
-	$(con).find('img').each((i, v) => swapImgSrc(v, false))
-}
+const loadOrUnloadImages = (load) => () =>
+  $con.find('img').each((i, v) => swapImgSrc(v, load));
 
-function scrollToTop(element) {
-    element.scrollIntoView(true);
-}
+const loadImages = loadOrUnloadImages(true);
+const unloadImages = loadOrUnloadImages(false);
 
-function scrollToBottom(element) {
-    element.scrollIntoView(false);
-}
+const scrollToTopOrBottom = (top) => (element) =>
+  element.scrollIntoView(top);
+
+const scrollToTop = scrollToTopOrBottom(true);
+const scrollToBottom = scrollToTopOrBottom(false);
 
 function scrollToBottomAfterCheck(visEl, element) {
-    // scroll to bottom of element if visEl not visible
-    if(visEl === undefined || !isElementInViewport(visEl)) 
-        scrollToBottom(element);
+  // scroll to bottom of element if visEl not visible
+  if(visEl == null || !isElementInViewport(visEl)) 
+    scrollToBottom(element);
 }
 
 function scrollToArticleBottom(){
-    scrollToBottomAfterCheck($('.article_full_contents > .clearfix')[0], $('.article_expanded')[0]);
+  scrollToBottomAfterCheck($('.article_full_contents > .clearfix')[0], $('.article_expanded')[0]);
 }
 
-var selected_img = undefined;
+let selected_img = undefined;
 function scrollImg(forward) {
-	selected_img = scrollItems(forward, 'img', selected_img);
-	swapImgSrc(selected_img, true);
+  selected_img = scrollItems(forward, 'img', selected_img);
+  swapImgSrc(selected_img, true);
 }
 
-var selected_link = undefined;
+let selected_link = undefined;
 function scrollLink(forward) {
-	var selected_link_class = 'jack_selected_link';
-	$(selected_link).removeClass(selected_link_class);
-	selected_link = scrollItems(forward, 'a', selected_link);
-	$(selected_link).addClass(selected_link_class);
+  selected_link = scrollItems(forward, 'a', selected_link);
 }
 
-function scrollItems(forward, identifier, selection){
-	var items = $(con).find(identifier).toArray();
-	if(!forward) items.reverse();
-	if(selection !== undefined){
-		var i = items.indexOf(selection);
-		if(i == -1) 
-			selection = items[0];
-		else if(i + 1 < items.length)
-			selection = items[i+1];
-	}
-	else
-		selection = items[0];
-	scrollToTop(selection);
-	return selection;
+const clamp = (min, num, max) => Math.min(Math.max(num, min), max);
+
+// function scrollItems(forward, identifier, selection) {
+function scrollItems(forward, identifier) {
+  const selectorClass = 'jack_selected';
+  const $items = $con.find(identifier);
+  const index = Math.max($items.index(`.${selectorClass}`), 0);
+  $items.removeClass(selectorClass);
+  const nextI = index + (forward ? 1 : -1);
+  const nextEl = $items[clamp(0, nextI, $items.size() - 1)];
+  $(nextEl).addClass(selectorClass);
+  scrollToTop(nextEl);
+  return nextEl;
 }
+
+const unwrapeIfJQuery = (el) =>
+  typeof jQuery === 'function' && el instanceof jQuery ? el[0] : el;
 
 function isElementInViewport (el) {
-    if (typeof jQuery === "function" && el instanceof jQuery) {
-        el = el[0];
-    }
-
-    var rect = el.getBoundingClientRect();
-
-    return (
-        rect.top >= 0 &&
-        rect.left >= 0 &&
-        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
-        rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
-    );
+  const rect = unwrapeIfJQuery(el).getBoundingClientRect();
+  return (
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
+    rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
+  );
 }
 
 window.select20 = function() {
-	$('#feed_log_dialog td:nth-of-type(3):contains(20)').css('cssText', 'background-color: red !important');
+  $('#feed_log_dialog td:nth-of-type(3):contains(20)')
+    .css('cssText', 'background-color: red !important');
 }
 
 window.expandMe = function(e) { 
-    var text = e.data.text;
-    if(this.innerHTML == text) 
-        this.innerHTML += this.title; 
-    else
-        this.innerHTML = text;
-    scrollToArticleBottom();
+  const $this = $(this);
+  const expanded = $this.attr('expanded');
+  const minimized = $this.attr('minimized');
+  if(this.innerHTML === minimized) 
+    this.innerHTML += expanded; 
+  else
+    this.innerHTML = minimized;
+  scrollToArticleBottom();
 }
 
 // return a string diff of the dates
 function dateDiff(dat1, dat2) {
-	var dif = Math.abs((dat2 - dat1) / 1000); // seconds diff
-	var minDif = dif / 60; // minutes diff
-	if(Math.ceil(minDif) < 60)
-		return Math.ceil(minDif) + 'm';
-	var hourDif = minDif / 60;
-	if(Math.ceil(hourDif) < 24)
-		return Math.ceil(hourDif) + 'h';
-	var dayDif = hourDif / 24;
-	if(Math.ceil(dayDif) < 7)
-		return Math.ceil(dayDif) + 'd';
-	var weekDif = dayDif / 7;
-	return Math.ceil(weekDif) + 'w';
+  const dif = Math.abs((dat2 - dat1) / 1000); // seconds diff
+  const minDif = dif / 60; // minutes diff
+  if(Math.ceil(minDif) < 60)
+    return Math.ceil(minDif) + 'm';
+  const hourDif = minDif / 60;
+  if(Math.ceil(hourDif) < 24)
+    return Math.ceil(hourDif) + 'h';
+  const dayDif = hourDif / 24;
+  if(Math.ceil(dayDif) < 7)
+    return Math.ceil(dayDif) + 'd';
+  const weekDif = dayDif / 7;
+  return Math.ceil(weekDif) + 'w';
 }
 
 function makeDate(dat) {
-	if(dat.startsWith('201'))
-		return new Date(dat);
-	else {
-		var d1 = new Date();
-		var dats = dat.split(':');
-		d1.setHours(dats[0]);
-		d1.setMinutes(dats[1]);
-		return d1;
-	}
+  if(dat.startsWith('201'))
+    return new Date(dat);
+  else {
+    const d1 = new Date();
+    const dats = dat.split(':');
+    d1.setHours(dats[0]);
+    d1.setMinutes(dats[1]);
+    return d1;
+  }
 }
 
-function escapeHtml(text) {
-  var map = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#039;'
-  };
-  return text.replace(/[&<>"']/g, function(m) { return map[m]; });
-}
+const escapeHtmlCharacters = (text) =>
+  text.replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`);
 
-function makeLinkElement(src, text) {
-	var linkStyle = " style='color: green; font-size: 1.3em;' ";
-    return $('<a ' + linkStyle + 'target="_blank" href="' + src + '">' + text + '</a>')[0];
-}
+const makeLinkElement = (src, text) => $('<a/>')
+  .attr('target', '_blank')
+  .attr('href', src)
+  .css('color', 'green')
+  .css('font-size', '1.3em')
+  .text(text);
 
 function makeVineElement(src) {
-	return $('<a target="_blank" href="' + src + '"><img src="https://vine.co/static/images/vine_glyph_2x.png"></a>')[0];
+  const img = $('<img/>')
+    .attr('src', 'https://vine.co/static/images/vine_glyph_2x.png');
+  return $('<a/>')
+    .attr('target', "_blank")
+    .attr('href', "${src}")
+    .append(img);
 }
 
-function makeCommentElement(id, info, text) {
-    return $('<p style="color: #049cdb" id="' + id + '" title="' + info + '">' + text + '</p>')[0];
-}
+const makeCommentElement = (id, info, text) => $('<p/>')
+  .css('color', '#049cdb')
+  .attr('id', id)
+  .attr('expanded', info)
+  .attr('minimized', text)
+  .text(text)
+  .click(expandMe);
 
-function makeImageElement(src) {
-    return $('<img style="max-width: 320px; max-height: 400px; border: 2px dashed ' + greeny + '" src="' + src + '">')[0];
-}
+const makeImageElement = (src) => $('<img/>')
+  .css('max-width', '320px')
+  .css('max-height', '400px')
+  .css('border', '2px dashed ' + greeny)
+  .attr('src', src);
 
 function removeAllAttributes(ele){
-	var notarr = ele.attributes;
-	var attrs = [];
-	for(var i = 0; i < notarr.length; i++)
-		attrs[i] = notarr[i].name;
-	for(i = 0; i < attrs.length; i++)
-		ele.removeAttribute(attrs[i]);
-	for(i = 0; i < ele.children.length; i++)
-		removeAllAttributes(ele.children[i]);
+  const attrs = ele.attributes.map(el => el.name);
+  for(const attr of attrs)
+    ele.removeAttribute(attr);
+  for(const child of ele.children)
+    removeAllAttributes(child);
 }
 
-function arrayMax(arr) { 
-	return Math.max.apply(null, arr); 
+const arrayMax = (arr) => Math.max(...arr); 
+const arrayMin = (arr) => Math.min(...arr);
+const arrayDiff = (arr) => Math.abs(arrayMax(arr) - arrayMin(arr)); 
+
+const appendTagDiv = (text) => {
+  const $div = $('<div>')
+    .css('color', '#be26d8')
+    .css('border-top', greeny + ' dotted .2em')
+    .text(text);
+  $con.append($div);
 }
 
-function arrayMin(arr) { 
-	return Math.min.apply(null, arr); 
-}
+window.gotTumblrJson = function(json) {
+  const post = json.response.posts[0];
+  
+  // tags
+  const brHash = '<br># ';
+  appendTagDiv((post.tags.length === 0 ? '' : brHash) + post.tags.join(brHash));
+  
+  // reblog info
+  const { reblog, reblogged_from_url } = post;
+  if(reblogged_from_url != null){
+    // added words
+    if(reblog != null) { 
+      const comm_array = [];
+      if(reblog.tree_html.length > 0) 
+        comm_array.push('tree');
+      if(reblog.comment.length > 0) 
+        comm_array.push('comment');
+      const comm_display_name = `[${comm_array.join(' and ')}]`;
+      const comm_text = reblog.tree_html + reblog.comment;
 
-function arrayDiff(arr) { 
-	return Math.abs(arrayMax(arr) - arrayMin(arr)); 
-}
-
-window.gotJSON = function(json) {
-    var po = json.response.posts[0];
-    
-    // tags
-    var ts = po.tags;
-    for(var i = 0; i < ts.length; i++)
-        tags += '<br># ' + ts[i];
-    tags += '</div><br>';
-    con.append($(tags)[0]);
-    
-    //reblog info
-    var rbUrl = po.reblogged_from_url;
-    if(rbUrl !== undefined){
-        // added words
-        if(po.reblog !== undefined) { 
-            var rebl = po.reblog;
-            var comm_display_name = '';
-            if(rebl.tree_html.length > 0 && rebl.comment.length > 0) 
-                comm_display_name = '[tree and comment]';
-            else if(rebl.tree_html.length > 0) 
-                comm_display_name = '[tree]';
-            else if(rebl.comment.length > 0) 
-                comm_display_name = '[comment]';
-            var comm_text = rebl.tree_html + rebl.comment;
-			
-			var cc = $(con).clone()[0];
-			removeAllAttributes(cc);
-			var rb = $('<div>' + comm_text + '</div>')[0];
-			removeAllAttributes(rb);
-			var ccomp = cc.outerHTML.replace(/[\n\t\s]/g, '').replace(/> *</g, '><');
-			var ih = rb.innerHTML.replace(/[\n\t\s]/g, '').replace(/<figure>(<img>)<\/figure>/g, '$1');
-			if(!ccomp.includes(ih)) {
-				con.append(makeCommentElement(comm_id, escapeHtml(comm_text), comm_display_name));
-				$('#' + comm_id).click({text: comm_display_name}, expandMe);
-			}
-        }
-        
-        var rb = '<p><a target="_blank" style="font-size: .9em; color: ' + greeny + ';" href="' + rbUrl + '">' + po.reblogged_from_title + ': ' + po.reblogged_from_name + '</a></p>';
-        con.append($(rb)[0]);
+      const conClone = $con.clone()[0];
+      removeAllAttributes(conClone);
+      const comm_element = $('<div>').text(comm_text)[0];
+      removeAllAttributes(comm_element);
+      const ccomp = conClone.outerHTML
+        .replace(/[\n\t\s]/g, '')
+        .replace(/> *</g, '><');
+      const ih = comm_element.innerHTML
+        .replace(/[\n\t\s]/g, '')
+        .replace(/<figure>(<img>)<\/figure>/g, '$1');
+      if(!ccomp.includes(ih)) {
+        $con.append(makeCommentElement(
+          comm_id, escapeHtmlCharacters(comm_text), comm_display_name));
+      }
     }
-    // notes info
-    else if(po.notes !== undefined) {
-        var nots = '';
-        var pon = Object.values(po.notes);
-        var counter = 0;
-        for(var noti = pon.length - 1; noti >= 0; noti--) {
-            if(pon[noti].added_text !== undefined)
-                nots += '<br>' + (counter++) + '. ' + escapeHtml(pon[noti].added_text);
-            else if(pon[noti].reply_text !== undefined)
-                nots += '<br>' + (counter++) + '. ' + escapeHtml(pon[noti].reply_text);
-        }
-        var notes_ = '[notes]';
-        con.append($('<div id="' + notes_id + '" title="' + nots + '">' + notes_ + '</div>')[0]);
-        $('#' + notes_id).click({text: notes_}, expandMe);
+
+    const lText = post.reblogged_from_title + ': ' + post.reblogged_from_name;
+    const rebloggedFromLink = makeLinkElement(reblogged_from_url, lText)
+      .css('font-size', '.9em');
+    $con.append($('<p/>').append(rebloggedFromLink));
+  }
+  // notes info
+  else if(post.notes != null) {
+    const noteArr = [];
+    let counter = 0;
+    const postNotes = Object.values(post.notes);
+    postNotes.reverse();
+    for(const note of postNotes) {
+      const text = note.added_text ?? note.reply_text;
+      if(text != null)
+        noteArr.push(`${counter++}. ${escapeHtmlCharacters(text)}`);
     }
-    
-    // tumblr controls iframe
-    var rbId = po.id;
-    var rbName = json.response.blog.name;
-    if(rbId !== undefined && rbName !== undefined) {
-        var ifSrc = 'https://www.tumblr.com/dashboard/iframe?tumblelogName=' + rbName + '&pid=' + rbId;
-        // rIframe = $('<div><iframe style="width: 540px; height: 55px" src="' + ifSrc + '"></iframe></div>')[0];
-	rIframe = ifSrc;
-    }
+    const notes = noteArr.join('<br>');
+    $con.append(makeCommentElement(notes_id, notes, '[notes]'));
+  }
+
+  // tumblr controls iframe
+  const pid = post.id;
+  const tumblelogName = json.response.blog.name;
+  if(pid != null && tumblelogName != null) {
+    const qs = $.param({ tumblelogName, pid });
+    $con.attr(rbIframeSrc, `https://www.tumblr.com/dashboard/iframe?${qs}`);
+  }
 }
 
 function doStuff(mutations){
-    var addedSummit = false;
-    $(mutations).each(function() {
-        if(this.addedNodes.length > 0)
-            addedSummit = true;
+  // if nothing was added
+  if (!mutations.some(m => m.addedNodes.length > 0)) return;
+
+  $con = $('.article_content');
+  
+  if(stopImageLoading)
+    unloadImages();
+
+  // handle keydown and removal
+  var key_class = 'jack_key';
+  if($con[0] != null && !$con.hasClass(key_class)) {
+    $con.addClass(key_class);
+    $(document).keydown(articleKeypress);
+    $con.on('remove', function () { 
+      selected_img = undefined;
+      $(document).off('keydown', articleKeypress); 
     });
-    if(!addedSummit) return;
+  }
 
-	con = $('.article_content');
-	
-	if(stopImageLoading)
-		unloadImages();
-
-    // handle keydown and removal
-    var key_class = 'jack_key';
-    if(con[0] !== undefined && !$(con[0]).hasClass(key_class)) {
-        $(con[0]).addClass(key_class);
-        $(document).keydown(articleKeypress);
-        $(con[0]).on("remove", function () { 
-			selected_img = undefined;
-			$(document).off('keydown', articleKeypress); 
-		});
+  // show article posted date
+  for(const header of $('.header_date')) {
+    var hdAss = 'hd_found_jack';
+    const $par = $(header.parentElement);
+    if(!$par.hasClass(hdAss)) {
+      $par.addClass(hdAss);
+      const datR = header.title.match('Date received: (.*)')[1];
+      const datP = header.title.match('Date posted: (.*)')[1];
+      // const diff = dateDiff(makeDate(datP), makeDate(datR));
+      const diff = 'm';
+      if(diff.endsWith('d') || diff.endsWith('w'))
+        header.innerHTML = 'Posted vs received: ' + diff;
     }
-	
-	// show article posted date
-	var hds = $('.header_date');
-	for(var j = 0; j < hds.length; j++) {
-		var hd = hds[j];
-		var hdAss = 'hd_found_jack';
-		if(!$(hd.parentElement).hasClass(hdAss)) {
-			$(hd.parentElement).addClass(hdAss);
-			var datR = hd.title.match('Date received: (.*)')[1];
-			var datP = hd.title.match('Date posted: (.*)')[1];
-			var diff = 'm';//dateDiff(makeDate(datP), makeDate(datR));
-			if(diff.endsWith('d') || diff.endsWith('w'))
-				hd.innerHTML = 'Posted vs received: ' + diff;
-		}
-	}
-	
-	// handle images unable to load over https
-	var images = con.find('img');
-	for(var imgC = 0; imgC < images.length; imgC++) {
-		var image = images[imgC];
-		var proxy = '//images.weserv.nl/?url=';
-		if((image.src.includes('dw.com') || image.src.includes('kk.org')) && !image.src.includes(proxy))
-			image.src = proxy + image.src.substr(image.src.indexOf(':') + 3);
-	}
-	
-	// handle iframe stuff
-	var iffy = con.find('iframe');
-	for(var i = 0; i < iffy.length; i++) {
-		var frame = iffy[i];
-        var fsrc = frame.src;
-		
-		// avoid handling iframes infinitely
-        var ass = 'jackson_handled';
-		if($(frame).hasClass(ass)) continue;
-		$(frame).addClass(ass);
-		
-        var fele;
+  }
 
-		// handle audio 
-		if(fsrc.includes('audio') || fsrc.includes('soundcloud') || fsrc.includes('embed.spotify')) 
-			fele = makeLinkElement(fsrc, 'AUDIO LINK');
-		
-		// handle vine stuff
-		if(fsrc.includes("vine.co/v"))
-			fele = makeVineElement(fsrc);
-		
-		// handle vimeo
-		if(fsrc.includes('vimeo'))
-			fele = makeLinkElement(fsrc, 'VIMEO');
+  // handle images unable to load over https
+  for (const image of $con.find('img')) {
+    const proxy = '//images.weserv.nl/?url=';
+    if(['dw.com','kk.org'].some(s =>
+        image.src.includes(s)) && !image.src.includes(proxy))
+      image.src = proxy + image.src.substr(image.src.indexOf(':') + 3);
+  }
 
-        frame.parentElement.replaceChild(fele, frame);
-	}
-	
-	// remove instagram SPACE
-	var ins = $("blockquote>div>p>a");
-	if(ins.length > 0 && ins[0].href.includes("instagram.com/p")) {
-		var p = ins[0];
-		$.ajax({ dataType: "jsonp", url: "https://api.instagram.com/oembed/?url=" + p.href, })
-		.done(function(json) {
-			$(p).empty();
-			p.append(makeImageElement(json.thumbnail_url));
-		});
-		var bq = p.parentElement.parentElement.parentElement;
-		$(bq).empty();
-		bq.append(p);
-	}
-	
-	// replace tumblr video display (only does one)
-	var vid = $(con).find('video');
-	if(vid.length > 0 && $(vid[0]).find('source').length > 0) {
-		var sour = $(vid[0]).find('source')[0].src;
-		if(sour.substring(sour.length - 4) != ".mp4")
-			sour += ".mp4";
-		var aa = $('<a target="_blank" href="' + sour + '"></a>')[0];
-		aa.append(makeImageElement(vid[0].poster));
-		vid[0].parentElement.replaceChild(aa, vid[0]);
-	}
-	
-	// get tumblr post data
-	var pp = $('.article_full_contents:has(.article_content)');
-	var assc = 'jackson_handled_tags';
-	if(pp.length > 0 && !$(con).hasClass(assc)) {
-		// make pics go side by side
-		var heights = $('.article_content>img').map(function() { return $(this).height() });
-		var widths = $('.article_content>img').map(function() { return $(this).width() });
-		if(heights.length % 2 == 0 && arrayDiff(heights) < 5 && arrayDiff(widths) < 10) 
-			con[0].innerHTML = con[0].innerHTML.replace(/(<img[^>]+>)(<br>)+/g, '$1 &nbsp;');
-		
-		$(con).addClass(assc);
-		pp = pp[0];
-		var urls = $(pp).find('[id^="article_"][href*="tumblr"]');
-		if(urls.length > 0) {		
-			var postUrl = $(pp).find('.article_title_link')[0].href;
-			var postId = postUrl.match('post/(\\d+)')[1];
-			var tumb_url = urls[0].href.match('.*:.{2}(.*%2F%2F)?(.*)\.tumblr\.com')[2];
-			if(kold.includes(tumb_url)) {
-				tumb_url = kurrent;
-				$(pp).find('.article_title_link')[0].href = 'https://' + tumb_url + '.tumblr.com/post/' + postId;	
-			}
-			var blog_identifier = tumb_url + '.tumblr.com';
-            var notes = '';
-            if(tumb_url.includes('sbroxman'))
-                notes = '&notes_info=true';
-			var tur = "https://api.tumblr.com/v2/blog/" + blog_identifier + "/posts/?reblog_info=true&api_key=" + tumb_api_key + "&id=" + postId + notes;
-            tags = "<div style='color: #be26d8; border-top: " + greeny + " dotted .2em'>";
-			var aj = $.ajax({ dataType: "jsonp", url: tur, })
-                    .success(gotJSON)
-                    .fail(function() {
-                        rIframe = null;
-                        con.append($(tags + '(POST DATA PULL FAILED)</div>')[0]);
-                    });
-			$(con[0]).on("remove", function () { aj.abort(); });
-		}
-	}
+  const ass = 'jackson_handled_iframe';
+  for(const frame of $con.find(`iframe:not(.${ass})`)) {
+    const fsrc = frame.src;
+    const $frame = $(frame);
+    $frame.addClass(ass);
+
+    let fele = null;
+
+    if(['audio', 'soundcloud', 'embed.spotify'].some(t => fsrc.includes(t))) 
+      fele = makeLinkElement(fsrc, 'AUDIO LINK');
+    else if(fsrc.includes("vine.co/v"))
+      fele = makeVineElement(fsrc);
+    else if(fsrc.includes('vimeo'))
+      fele = makeLinkElement(fsrc, 'VIMEO');
+    else continue;
+
+    frame.parentElement.replaceChild(fele, frame);
+  }
+
+  // remove instagram SPACE
+  const ins = $('blockquote>div>p>a[href~="instagram.com/p"]')[0];
+  if(ins != null) {
+    const url = 'https://api.instagram.com/oembed/?url=' + ins.href;
+    $.ajax({ dataType: 'jsonp', url }).done(function(json) {
+      $(ins).empty();
+      ins.append(makeImageElement(json.thumbnail_url));
+    });
+    const bq = ins.parentElement.parentElement.parentElement;
+    $(bq).empty();
+    bq.append(ins);
+  }
+
+  // replace tumblr video display (only does one)
+  var vid = $con.find('video');
+  if(vid.length > 0 && $(vid[0]).find('source').length > 0) {
+    var sour = $(vid[0]).find('source')[0].src;
+    if(!sour.endsWith('.mp4'))
+      sour += ".mp4";
+    const $aa = makeLinkElement(sour, '')
+      .append(makeImageElement(vid[0].poster));
+    vid[0].parentElement.replaceChild($aa, vid[0]);
+  }
+
+  // get tumblr post data
+  const assc = 'jackson_handled_tags';
+  const $pp = $(`.article_full_contents:not(.${assc})`).has($con);
+  if($pp.length > 0) {
+    // make pics go side by side
+    const $articleImages = $con.find('>img').map(img => $(img));
+    const heights = $articleImages.map($img => $img.height());
+    const widths = $articleImages.map($img => $img.width());
+    if(heights.length % 2 == 0 && arrayDiff(heights) < 5 && arrayDiff(widths) < 10) 
+      $con.html($con.html().replace(/(<img[^>]+>)(<br>)+/g, '$1 &nbsp;'));
+    
+    $con.addClass(assc);
+    const fullTumbUrl =
+      $pp.find('[id^="article_"][href*="tumblr"]').attr('href');
+    if(fullTumbUrl != null) {    
+      const $titleLink = $pp.find('.article_title_link');
+      const postUrl = $titleLink.attr('href');
+      const postId = postUrl.match('post/(\\d+)')[1];
+      let tumbUrl = fullTumbUrl.match('.*:.{2}(.*%2F%2F)?(.*\.tumblr\.com)')[2];
+      if(kold.includes(tumbUrl)) {
+        tumbUrl = `${kurrent}.tumblr.com`;
+        $titleLink.attr('href', `https://${tumbUrl}/post/${postId}`);
+      }
+      const url = `https://api.tumblr.com/v2/blog/${tumbUrl}/posts/`;
+      const qs = {
+        api_key: tumb_api_key,
+        id: postId,
+        notes_info: tumbUrl.includes('sbroxman'),
+        reblog_info: true,
+      };
+      const aj = $.ajax({ dataType: 'jsonp', url, data: qs, })
+        .success(gotTumblrJson)
+        .fail(function() {
+          rIframe = null;
+          appendTagDiv('(POST DATA PULL FAILED)');
+        });
+      $con.on('remove', function () { aj.abort(); });
+    }
+  }
 }
 
 $(function() {
-    new MutationObserver(function(mutations){ doStuff(mutations); })
-    .observe($('#reader_pane')[0], {
-        childList: true,
-        subtree: true
-    });
+  new MutationObserver(doStuff).observe($('#reader_pane')[0], {
+    childList: true,
+    subtree: true
+  });
 });
