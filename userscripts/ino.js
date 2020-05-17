@@ -80,9 +80,12 @@ function articleKeypress(e) {
     // if not displaying imagus media
     if(!$('div:has(div + img + video + div)')[0] ||
         $('div:has(div + img + video + div):hidden')[0])
-      $(hover_me).mouseover(); // simulate hover
+      // doesn't work: $(hover_me).mouseover(); // simulate hover
+      hover_me.dispatchEvent(new MouseEvent('mouseover'));
     else // trigger imagus to stop displaying imagus media
-      $readerPane.mousemove();
+      // ideally, jQuery's mousemove would work...
+      $readerPane[0].dispatchEvent(
+        new MouseEvent('mousemove', {clientX: '-1', clientY: '-1'})); 
   }
 
   else if(e.which === Keys.q && e.shiftKey)
