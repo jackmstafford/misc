@@ -329,7 +329,7 @@ window.gotTumblrJson = function(json) {
   }
 
   // tumblr controls iframe
-  const pid = post.id;
+  const pid = post.id_string; // id != id_string
   const tumblelogName = json.response.blog.name;
   if(pid != null && tumblelogName != null) {
     const qs = $.param({ tumblelogName, pid });
